@@ -1,0 +1,21 @@
+DROP TRIGGER IF EXISTS `ProductDelete`;
+DELIMITER $$
+CREATE TRIGGER `ProductDelete` AFTER DELETE ON `products` FOR EACH ROW BEGIN
+INSERT INTO log_histories (name, description, type, class, method, user_id, created_at)
+VALUE ('products', CONCAT('[{"id:"', OLD.id, '", "name": ', OLD.name, '", "description: "', OLD.description, '", "value: "', OLD.value, '", "stock: "', OLD.stock, '", "height: "', OLD.height, '", "width: "', OLD.width, '", "depth: "', OLD.depth, '", "weight: "', OLD.weight, '", "created_at: "', OLD.created_at, '"}]'), 'delete', 'manual', 'manual', '0', NOW());
+END
+$$
+DELIMITER ;
+
+
+DROP TRIGGER IF EXISTS `ProductUpdate`;
+DELIMITER $$
+CREATE TRIGGER `ProductUpdate` BEFORE UPDATE ON `products` FOR EACH ROW BEGIN
+INSERT INTO log_histories (name, description, type, class, method, user_id, created_at)
+VALUE ('products', CONCAT('[{"id:"', OLD.id, '", "name": ', OLD.name, '", "description: "', OLD.description, '", "value: "', OLD.value, '", "stock: "', OLD.stock, '", "height: "', OLD.height, '", "width: "', OLD.width, '", "depth: "', OLD.depth, '", "weight: "', OLD.weight, '", "created_at: "', OLD.created_at, '"}]'), 'update', 'manual', 'manual', '0', NOW());
+END
+$$
+DELIMITER ;
+
+
+
