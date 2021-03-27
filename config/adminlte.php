@@ -249,12 +249,12 @@ return [
 //            'icon' => 'fas fa-fw fa-tags',
 //            'active'=> ['admin/cupons', 'admin/cupons/*']
 //        ],
-//        [
-//            'text' => 'Depoimentos',
-//            'route'  => 'admin.testimonies',
-//            'icon' => 'fas fa-fw fa-handshake',
-//            'active'=> ['admin/depoimentos', 'admin/depoimentos/*']
-//        ],
+        [
+            'text' => 'Depoimentos',
+            'route'  => 'admin.testimonies',
+            'icon' => 'fas fa-fw fa-handshake',
+            'active'=> ['admin/depoimentos', 'admin/depoimentos/*']
+        ],
 //        [
 //            'text' => 'Avaliações de Produtos',
 //            'route'  => 'admin.rate',
