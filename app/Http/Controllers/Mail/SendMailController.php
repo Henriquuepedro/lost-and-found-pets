@@ -8,19 +8,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use App\Admin;
-use App\Models\OrderAddress;
-use App\Models\OrderItems;
-use App\Models\Image;
-use App\Models\Order;
 
 class SendMailController extends Controller
 {
     private $mail;
     private $admin;
-    private $orderAddress;
-    private $orderItems;
-    private $image;
-    private $order;
     private $logo;
     private $company_name;
     private $emailNoReplay;
@@ -29,14 +21,10 @@ class SendMailController extends Controller
     private $portNoReplay;
     private $secureNoReplay;
 
-    public function __construct(Admin $admin, OrderAddress $ordeAddress, OrderItems $orderItems, Image $image, Order $order)
+    public function __construct(Admin $admin)
     {
         $this->mail         = new PHPMailer(true);
         $this->admin        = $admin;
-        $this->orderItems   = $orderItems;
-        $this->orderAddress = $ordeAddress;
-        $this->image        = $image;
-        $this->order        = $order;
 
         $dataAdmin          = $admin->getAdminMain();
         $this->logo         = asset("user/img/admin/{$dataAdmin->picture}");

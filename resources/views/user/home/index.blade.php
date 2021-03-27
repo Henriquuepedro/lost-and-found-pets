@@ -3,25 +3,41 @@
 @section('title', $settings['name_store'])
 
 @section('js')
+    <script type="text/javascript">
+        $(function() {
+            $('.carousel').carousel()
+        });
+    </script>
 @endsection
 
 @section('css')
 @endsection
 
 @section('body')
-    <div class="header">
-        <!------ Slider ------------>
-        <div class="slider">
-            <div class="slider-wrapper theme-default">
-                <div id="slider" class="nivoSlider">
-                    @foreach($arrBanners as $banner)
-                        <img src="{{ $banner['path'] }}" alt="" />
-                    @endforeach
-                </div>
+    <div class="content">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                @foreach($arrBanners as $key => $_)
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ $key }}" class="{{ $key === 0 ? 'active' : '' }}"></li>
+                @endforeach
+            </ol>
+            <div class="carousel-inner">
+                @foreach($arrBanners as $key => $banner)
+                    <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                        <img class="d-block w-100" src="{{ $banner['path'] }}" alt="" />
+                    </div>
+                @endforeach
             </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
     </div>
-    <!------End Slider ------------>
     <div class="main">
         <div class="wrap">
             <div class="content-top">
@@ -68,7 +84,7 @@
             <div class="content-middle">
                 <div class="section group example">
                     <div class="col_1_of_2 span_1_of_2">
-                        <img src="{{ asset('user//pic4.jpg') }}" alt=""/>
+                        <img src="{{ asset('user/images/pic4.jpg') }}" alt=""/>
                         <h4>Lorem Ipsum is simply dummy text </h4>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur sed do eiusmod tempor incididunt ut labore et dolore magna aliqua sed do eiusmod tempor incididunt ut labore et dolore magna aliqua velit .</p>
                         <a href="#" class="btn-default btn1">Read more</a>

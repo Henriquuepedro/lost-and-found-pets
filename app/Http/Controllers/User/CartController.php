@@ -279,7 +279,7 @@ class CartController extends Controller
 //            'valueFrete'    => $valueFrete
         );
 
-        return view('user.order.cart', compact('dataCart'));
+        return view('user.animal.cart', compact('dataCart'));
     }
 
     private function getItemsCart()

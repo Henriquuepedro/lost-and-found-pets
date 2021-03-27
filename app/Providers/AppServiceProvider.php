@@ -39,7 +39,6 @@ class AppServiceProvider extends ServiceProvider
             $settings = array();
 
             $admin  = new Admin();
-            $cart   = $this->getCart();
 
             $dataAdmin = $admin->getAdminMain();
 
@@ -56,9 +55,6 @@ class AppServiceProvider extends ServiceProvider
             $settings['title_about'] = $dataAdmin->title_about;
             $settings['description_about'] = $dataAdmin->description_about;
             // Fim imagem banner
-            // Inicio Carrinho
-            $settings['cart'] = $cart;
-            // Fim carrinho
 
             $view->with('settings', $settings);
         });

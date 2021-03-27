@@ -578,7 +578,7 @@
 
                     $('.value-frete-selected').text('R$ ' + result.price);
                     $('.date-frete-selected').text(result.date);
-                    $('.total-order').text('R$ ' + result.total_order);
+                    $('.total-animal').text('R$ ' + result.total_order);
                     $('.total-products').text('R$ ' + result.total_products);
                     if (result.value_cupom.status == true) {
                         $('.data-cupom').removeClass('d-none');
@@ -647,7 +647,7 @@
             $('button').attr('disabled', true);
             $('.value-frete-selected').html("<i class='fa fa-spin fa-spinner'></i>");
             $('.date-frete-selected').html("<i class='fa fa-spin fa-spinner'></i>");
-            $('.total-order').html("<i class='fa fa-spin fa-spinner'></i>");
+            $('.total-animal').html("<i class='fa fa-spin fa-spinner'></i>");
             $('.total-products').html("<i class='fa fa-spin fa-spinner'></i>");
             $('.value-cupom-total').html("<i class='fa fa-spin fa-spinner'></i>");
         }
@@ -668,7 +668,7 @@
             $('button').attr('disabled', false);
             if(nao_zerar != 'v_frete') $('.value-frete-selected').html("-");
             if(nao_zerar != 'd_frete') $('.date-frete-selected').html("-");
-            if(nao_zerar != 'total_ord') $('.total-order').html("-");
+            if(nao_zerar != 'total_ord') $('.total-animal').html("-");
             if(nao_zerar != 'total_prd') $('.total-products').html("-");
             if(nao_zerar != 'v_cupom') $('.value-cupom-total').html("-");
         }
@@ -787,7 +787,7 @@
                     <div class="checkout-header">
                         <h2 class="checkout-header">Datalhes Do Pedido</h2>
                     </div>
-                    <form action="{{route('user.order.checkout.send')}}" enctype="multipart/form-data" method="POST" name="checkout-send" id="checkout-send">
+                    <form action="{{route('user.animal.checkout.send')}}" enctype="multipart/form-data" method="POST" name="checkout-send" id="checkout-send">
                         <div class="checkout-info">
                             <div class="info-value">
                                 <h2>Resumo do pedido</h2>

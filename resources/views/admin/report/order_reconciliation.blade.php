@@ -39,21 +39,21 @@
         });
 
         $('.btnOrderReceived').on('click', function () {
-            const order_id      = $(this).closest('tr').attr('order-id');
+            const order_id      = $(this).closest('tr').attr('animal-id');
             const order_name    = $(this).closest('tr').find('td:eq(0)').text();
             const client_name   = $(this).closest('tr').find('td:eq(1)').text();
 
-            $('#modal-received h5.client-order').text(order_name + ' - ' + client_name);
+            $('#modal-received h5.client-animal').text(order_name + ' - ' + client_name);
             $('#modal-received button.btnSendOrderReceived').val(order_id);
             $('#modal-received').modal();
         })
 
         $('.btnOrderCancel').on('click', function () {
-            const order_id      = $(this).closest('tr').attr('order-id');
+            const order_id      = $(this).closest('tr').attr('animal-id');
             const order_name    = $(this).closest('tr').find('td:eq(0)').text();
             const client_name   = $(this).closest('tr').find('td:eq(1)').text();
 
-            $('#modal-cancel h5.client-order').text(order_name + ' - ' + client_name);
+            $('#modal-cancel h5.client-animal').text(order_name + ' - ' + client_name);
             $('#modal-cancel button.btnSendOrderCancel').val(order_id);
             $('#modal-cancel').modal();
         })
@@ -87,7 +87,7 @@
                             @foreach($arrOrders as $order)
                                 <tr>
                                     <td data-order="{{ $order['id'] }}"><a href="{{ route('admin.orders.view', $order['id']) }}" target="_blank">{{ $order['id_view'] }}</a></td>
-{{--                                    <td>{{ $order['client'] }}</td>--}}
+{{--                                    <td>{{ $animal['client'] }}</td>--}}
                                     <td><a href="https://www.mercadopago.com.br/activities/1?q={{ $order['transaction'] }}" target="_blank">{{ $order['transaction'] }}</a></td>
                                     <td data-order="{{ $order['gross_amount_order'] }}">{{ $order['gross_amount'] }}</td>
                                     <td data-order="{{ $order['discount_amount_order'] }}">{{ $order['discount_amount'] }}</td>

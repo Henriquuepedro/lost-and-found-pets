@@ -161,7 +161,7 @@
                                     </form>
                                 </div>
                             </div>
-{{--                            <div class="col-md-5 order-md-first d-flex align-items-stretch">--}}
+{{--                            <div class="col-md-5 animal-md-first d-flex align-items-stretch">--}}
 {{--                                <div id="map" class="map"></div>--}}
 {{--                            </div>--}}
                         </div>

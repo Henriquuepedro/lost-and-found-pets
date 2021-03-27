@@ -49,7 +49,7 @@
             const rate_id   = $(this).closest('tr').attr('rate-id');
             const title     = $(this).closest('tr').find('td:eq(0)').text();
             const name      = $(this).closest('tr').find('td:eq(1)').text();
-            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-order');
+            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-animal');
             console.log(status);
 
             $('#modal-change h5.name-product').text(name);
@@ -76,7 +76,7 @@
         $(document).on('click', '.btnRequestViewRate', function () {
             const rate_id   = $(this).closest('tr').attr('rate-id');
             const modal     = $('#modal-view');
-            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-order');
+            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-animal');
 
             $.ajax({
                 headers: {
@@ -94,8 +94,8 @@
                     modal.find('#description-view').val(response.description);
                     modal.find('#rate-view').val(response.rate);
 
-                    modal.find('#order-view').attr('href', response.order_url);
-                    modal.find('#order-view').text('Pedido: ' + response.order_id);
+                    modal.find('#animal-view').attr('href', response.order_url);
+                    modal.find('#animal-view').text('Pedido: ' + response.order_id);
 
                     modal.find('#product-view').attr('href', response.product_url);
                     modal.find('#product-view').text(response.product);
@@ -148,13 +148,13 @@
                                 <tr rate-id="{{ $rate['id'] }}">
                                     <td>{{ $rate['title'] }}</td>
                                     <td>{{ $rate['product'] }}</td>
-                                    <td>{{ $rate['order'] }}</td>
+                                    <td>{{ $rate['animal'] }}</td>
                                     <td>{{ $rate['rate'] }}</td>
                                     <td data-order="{{ $rate['status_order'] }}">{!! $rate['status'] !!}</td>
                                     <td data-order="{{ $rate['datetime_order'] }}">{{ $rate['created_at'] }}</td>
                                     <td class="text-center">
                                         <button class="btn btn-primary btnRequestViewRate btn-sm" data-toggle="tooltip" title="Visualizar"><i class="fas fa-eye"></i></button>
-                                        @if($rate['order'] == "ADM")
+                                        @if($rate['animal'] == "ADM")
                                             <a href="{{ route('admin.rate.edit', ['id' => $rate['id']]) }}" class="btn btn-warning text-white btn-sm" data-toggle="tooltip" title="Alterar"><i class="fa fa-edit"></i></a>
                                         @else
                                         <button class="btn btn-{{ $rate['status_order'] == 1 ? 'danger' : 'success' }} btnRequestChangeRate btn-sm" data-toggle="tooltip" title="{{ $rate['status_order'] == 1 ? 'Recusar' : 'Aprovar' }}"><i class="fas fa-{{ $rate['status_order'] == 1 ? 'times' : 'check' }}"></i></button>

@@ -7,7 +7,7 @@
     <script src="{{ asset('vendor/jquery-mask/jquery.mask.min.js') }}"></script>
     <script src="{{ asset('vendor/noUiSlider/nouislider.js') }}"></script>
     <script>
-        $('select[name="order"]').change(function () {
+        $('select[name="animal"]').change(function () {
             $('#form-search-products').submit();
         });
         $(function () {
@@ -228,11 +228,11 @@
                         <div class="form-group col-md-12 col-lg-4 col-xs-12 col-sm-12 mt-3">
                             {{--                                <h4 class="font-weight-bold">Ver Primero: </h4>--}}
                             <select class="form-control products-order" name="order">
-                                <option @if((isset($_GET['order']) && $_GET['order'] == "") || !isset($_GET['order'])) selected @endif value="">Ordenar ...</option>
-                                <option @if(isset($_GET['order']) && $_GET['order'] == "price_min_max")) selected @endif value="price_min_max">Menor Preço</option>
-                                <option @if(isset($_GET['order']) && $_GET['order'] == "price_max_min")) selected @endif value="price_max_min">Maior Preço</option>
-                                <option @if(isset($_GET['order']) && $_GET['order'] == "name_a_z")) selected @endif value="name_a_z">De A à Z</option>
-                                <option @if(isset($_GET['order']) && $_GET['order'] == "name_z_a")) selected @endif value="name_z_a">De Z à A</option>
+                                <option @if((isset($_GET['animal']) && $_GET['animal'] == "") || !isset($_GET['animal'])) selected @endif value="">Ordenar ...</option>
+                                <option @if(isset($_GET['animal']) && $_GET['animal'] == "price_min_max")) selected @endif value="price_min_max">Menor Preço</option>
+                                <option @if(isset($_GET['animal']) && $_GET['animal'] == "price_max_min")) selected @endif value="price_max_min">Maior Preço</option>
+                                <option @if(isset($_GET['animal']) && $_GET['animal'] == "name_a_z")) selected @endif value="name_a_z">De A à Z</option>
+                                <option @if(isset($_GET['animal']) && $_GET['animal'] == "name_z_a")) selected @endif value="name_z_a">De Z à A</option>
                             </select>
                         </div>
                     </div>

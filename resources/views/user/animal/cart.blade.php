@@ -505,7 +505,7 @@
                     </div>
                     @if(auth()->guard('client')->user())
                         <p class="text-center">
-                            <a href="{{route('user.order.checkout')}}" class="btn btn-primary py-3 px-4">
+                            <a href="{{route('user.animal.checkout')}}" class="btn btn-primary py-3 px-4">
                                 Continuar Pagamento
                             </a>
                         </p>

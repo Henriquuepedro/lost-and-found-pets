@@ -6,7 +6,7 @@
     <script src="{{ asset('vendor/icheck/icheck.js') }}"></script>
     <script src="{{ asset('vendor/jquery-mask/jquery.mask.min.js') }}"></script>
     <script>
-        $('.acc-order-detail-header').on('click', function () {
+        $('.acc-animal-detail-header').on('click', function () {
             $(this).siblings().slideToggle('slow');
         })
     </script>

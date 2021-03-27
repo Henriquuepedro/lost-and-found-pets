@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Address extends Model
+class Animal extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Address extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'cep', 'number', 'complement', 'reference', 'neighborhood', 'city', 'state', 'user_id'
+        'name', 'user_id'
     ];
 
     /**
@@ -29,13 +29,8 @@ class Address extends Model
      */
     protected $casts = [];
 
-    public function getAddressClient($client)
+    public function getAnimals($userId)
     {
-        return $this->where('user_id', $client)->get();
-    }
-
-    public function checkAddressExist($data)
-    {
-        return $this->where($data)->count() ? true : false;
+        return $this->where('user_id', $userId)->get();
     }
 }

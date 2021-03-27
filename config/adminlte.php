@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'SoLove',
+    'title' => 'Project',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'logo' => '<b>SOLOVE</b>',
+    'logo' => '<b>Project</b>',
     'logo_img' => 'user/img/logo.png',
     'logo_img_class' => 'brand-image img-circle',
     'logo_img_xl' => null,

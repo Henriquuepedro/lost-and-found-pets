@@ -99,7 +99,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return view('admin.order.index', compact('arrOrders'));
+        return view('admin.animal.index', compact('arrOrders'));
     }
 
     public function view(int $id)
@@ -160,12 +160,12 @@ class OrderController extends Controller
 
         }
 
-        return view('admin.order.view', compact('arrOrder', 'arrStatus', 'trackings'));
+        return view('admin.animal.view', compact('arrOrder', 'arrStatus', 'trackings'));
     }
 
     public function freight($id)
     {
-        return view('admin.order.freight', compact('id'));
+        return view('admin.animal.freight', compact('id'));
     }
 
     public function freightUpdate(Request $request)
@@ -316,6 +316,6 @@ class OrderController extends Controller
             ]);
         }
 
-        return view('admin.order.tags', compact('arrOrders'));
+        return view('admin.animal.tags', compact('arrOrders'));
     }
 }

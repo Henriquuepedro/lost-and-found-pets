@@ -71,27 +71,6 @@ class RegisterController extends Controller
 
         if ( auth()->guard('client')->attempt($dataUserAuth) && $create ) {
 
-            if (isset($_SESSION['cart'])) {
-
-                $userId   = auth()->guard('client')->user()->id;
-
-                foreach ($_SESSION['cart'] as $iten) {
-                    $prd_id = $iten['code'];
-                    $qty    = $iten['qty'];
-
-                    $prdExist = $this->cart->where(['product_id' => $prd_id, 'user_id' => $userId]);
-
-                    if ($prdExist->count() == 0) {
-                        $this->cart->create(['product_id' => $prd_id, 'qty' => $qty, 'user_id' => $userId]);
-                    } else {
-                        $qty += (float)$prdExist->first()->qty;
-                        $this->cart->where(['product_id' => $prd_id, 'user_id' => $userId])->update(['qty' => $qty]);
-                    }
-                }
-
-                unset($_SESSION['cart']);
-            }
-
             if(env('APP_ENV') == "production" || env('APP_ENV') == "test")
                 $this->mail->newUser();
 

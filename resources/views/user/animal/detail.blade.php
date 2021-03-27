@@ -22,7 +22,7 @@
                 }, 1800);
             }, 1000);
         })
-        $('.acc-order-detail-header').on('click', function () {
+        $('.acc-animal-detail-header').on('click', function () {
             $(this).siblings().slideToggle('slow');
         })
         $(document).scroll(function () {
@@ -74,7 +74,7 @@
         });
 
         $('#btnOrderRating').on('click', function () {
-            $('#mark-rate .form-rate-order').each(function () {
+            $('#mark-rate .form-rate-animal').each(function () {
                 if(!$('div[class^="star-rating-"] input[name^="rate_"]:checked').length) {
                     alert('É preciso avaliar o produto entre 1 e 5 estrelas!');
                 }

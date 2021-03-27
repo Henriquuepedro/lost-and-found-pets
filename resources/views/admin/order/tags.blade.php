@@ -37,21 +37,21 @@
         });
 
         $('.btnOrderReceived').on('click', function () {
-            const order_id      = $(this).closest('tr').attr('order-id');
+            const order_id      = $(this).closest('tr').attr('animal-id');
             const order_name    = $(this).closest('tr').find('td:eq(0)').text();
             const client_name   = $(this).closest('tr').find('td:eq(1)').text();
 
-            $('#modal-received h5.client-order').text(order_name + ' - ' + client_name);
+            $('#modal-received h5.client-animal').text(order_name + ' - ' + client_name);
             $('#modal-received button.btnSendOrderReceived').val(order_id);
             $('#modal-received').modal();
         })
 
         $('.btnOrderCancel').on('click', function () {
-            const order_id      = $(this).closest('tr').attr('order-id');
+            const order_id      = $(this).closest('tr').attr('animal-id');
             const order_name    = $(this).closest('tr').find('td:eq(0)').text();
             const client_name   = $(this).closest('tr').find('td:eq(1)').text();
 
-            $('#modal-cancel h5.client-order').text(order_name + ' - ' + client_name);
+            $('#modal-cancel h5.client-animal').text(order_name + ' - ' + client_name);
             $('#modal-cancel button.btnSendOrderCancel').val(order_id);
             $('#modal-cancel').modal();
         });
@@ -63,7 +63,7 @@
             }
 
             $('.tag:checked').each(function () {
-                orders.push($(this).closest('tr').attr('order-id'));
+                orders.push($(this).closest('tr').attr('animal-id'));
             });
 
             window.open("./envios/etiqueta/" + orders.join('-'), '_blank');

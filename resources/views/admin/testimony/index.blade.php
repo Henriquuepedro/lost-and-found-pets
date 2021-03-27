@@ -58,7 +58,7 @@
         $(document).on('click', '.btnRequestViewRate', function () {
             const rate_id   = $(this).closest('tr').attr('rate-id');
             const modal     = $('#modal-view');
-            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-order');
+            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-animal');
 
             $.ajax({
                 headers: {
@@ -76,8 +76,8 @@
                     modal.find('#description-view').val(response.description);
                     modal.find('#rate-view').val(response.rate);
 
-                    modal.find('#order-view').attr('href', response.order_url);
-                    modal.find('#order-view').text('Pedido: ' + response.order_id);
+                    modal.find('#animal-view').attr('href', response.order_url);
+                    modal.find('#animal-view').text('Pedido: ' + response.order_id);
 
                     modal.find('#product-view').attr('href', response.product_url);
                     modal.find('#product-view').text(response.product);

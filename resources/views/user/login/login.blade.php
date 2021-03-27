@@ -37,6 +37,7 @@
         .login h1 {
             font-weight: bold;
             margin: 0;
+            font-size: 25px;
         }
 
         .login h2 {
@@ -273,7 +274,6 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            padding: 50px 0;
         }
         .alert {
             width: 63%;
@@ -292,22 +292,21 @@
 
     <div class="main">
         <div class="wrap errors">
-
-                @if(session('success'))
-                    <div class="alert alert-success mt-2">{{session('success')}}</div>
-                @endif
-                @if(session('warning'))
-                    <div class="alert alert-danger mt-2">{{session('warning')}}</div>
-                @endif
-                @if(isset($errors) && count($errors) > 0)
-                    <div class="alert alert-danger col-md-offset-4 col-md-4">
-                        <ol>
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ol>
-                    </div>
-                @endif
+            @if(session('success'))
+                <div class="alert alert-success mt-2">{{session('success')}}</div>
+            @endif
+            @if(session('warning'))
+                <div class="alert alert-danger mt-2">{{session('warning')}}</div>
+            @endif
+            @if(isset($errors) && count($errors) > 0)
+                <div class="alert alert-danger col-md-offset-3 col-md-6">
+                    <ol>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ol>
+                </div>
+            @endif
         </div>
         <div class="wrap login">
             <div class="container" id="container">
