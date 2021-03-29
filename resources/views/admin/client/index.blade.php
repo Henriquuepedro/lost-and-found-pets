@@ -65,7 +65,6 @@
                             <th>Código</th>
                             <th>Nome</th>
                             <th>E-mail</th>
-                            <th>Telefone</th>
                             <th>Criado Em</th>
                             <th>Ação</th>
                         </tr>
@@ -76,7 +75,6 @@
                                     <td>{{ $client['id'] }}</td>
                                     <td>{{ $client['name'] }}</td>
                                     <td>{{ $client['email'] }}</td>
-                                    <td>{{ $client['tel'] }}</td>
                                     <td data-order="{{ $client['datetime_order'] }}">{{ $client['created_at'] }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('admin.client.view', ['id' => $client['id']]) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Visualizar"><i class="fas fa-eye"></i></a>
@@ -89,7 +87,6 @@
                             <th>Código</th>
                             <th>Nome</th>
                             <th>E-mail</th>
-                            <th>Telefone</th>
                             <th>Criado Em</th>
                             <th>Ação</th>
                         </tr>
