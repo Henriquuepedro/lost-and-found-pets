@@ -11,10 +11,6 @@
     @yield('css')
 @stop
 
-@section('classes_body', $adminlte->getBodyClasses())
-
-@section('body_data', $adminlte->getBodyData())
-
 @section('body')
     <div class="wrapper">
 

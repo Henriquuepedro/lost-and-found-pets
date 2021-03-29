@@ -4,32 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Order;
 use App\User;
-use App\Models\OrderItems;
 use App\Admin;
-use App\Models\OrderAddress;
 use App\Models\LogAdmin;
 
 class HomeController extends Controller
 {
-    private $product;
-    private $order;
     private $client;
-    private $orderItems;
     private $admin;
-    private $orderAddress;
     private $logAdmin;
 
-    public function __construct(Product $product, Order $order, OrderItems $orderItems, User $client, Admin $admin, OrderAddress $orderAddress, LogAdmin $logAdmin)
+    public function __construct(User $client, Admin $admin, LogAdmin $logAdmin)
     {
-        $this->product = $product;
-        $this->order = $order;
         $this->client = $client;
-        $this->orderItems = $orderItems;
         $this->admin = $admin;
-        $this->orderAddress = $orderAddress;
         $this->logAdmin = $logAdmin;
     }
 

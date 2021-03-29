@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\User\AccountController;
+use App\Http\Controllers\User\AnimalController as AnimalUser;
+use App\Http\Controllers\User\ChatController;
+use App\Http\Controllers\User\RegisterController;
+use App\Http\Controllers\User\AboutController;
+use App\Http\Controllers\User\ContactController;
+use App\Http\Controllers\User\ForgotPasswordController;
+use App\Http\Controllers\User\HomeController as HomeUser;
+use App\Http\Controllers\User\LoginController;
+use App\Http\Controllers\User\TestimonyController as TestimonyUser;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,90 +27,55 @@ use Illuminate\Support\Facades\Route;
 /**
  * CLIENTES
  */
-Route::get('/', 'User\HomeController@index')->name('user.home');
+Route::get('/', [HomeUser::class, 'index'])->name('user.home');
 
-Route::get('/entrar', 'User\LoginController@login')->name('user.login');
-Route::post('/entrar', 'User\LoginController@loginPost')->name('user.login.post');
-Route::get('/sair', 'User\LoginController@logout')->name('user.logout');
+Route::get('/entrar', [LoginController::class, 'login'])->name('user.login');
+Route::post('/entrar', [LoginController::class, 'loginPost'])->name('user.login.post');
+Route::get('/sair', [LoginController::class, 'logout'])->name('user.logout');
 
-Route::get('/esqueceu-senha', 'User\ForgotPasswordController@forgotPassword')->name('user.forgotPassword');
-Route::post('/esqueceu-senha', 'User\ForgotPasswordController@forgotPasswordPost')->name('user.forgotPassword.post');
+Route::get('/esqueceu-senha', [ForgotPasswordController::class,'forgotPassword'])->name('user.forgotPassword');
+Route::post('/esqueceu-senha', [ForgotPasswordController::class,'forgotPasswordPost'])->name('user.forgotPassword.post');
 
-Route::get('/redefinir-senha/{hash}', 'User\ForgotPasswordController@resetPassword')->name('user.resetPassword');
-Route::post('/redefinir-senha', 'User\ForgotPasswordController@resetPasswordPost')->name('user.resetPassword.post');
+Route::get('/redefinir-senha/{hash}', [ForgotPasswordController::class,'resetPassword'])->name('user.resetPassword');
+Route::post('/redefinir-senha', [ForgotPasswordController::class,'resetPasswordPost'])->name('user.resetPassword.post');
 
-Route::get('/cadastro', 'User\RegisterController@register')->name('user.register');
-Route::post('/cadastro', 'User\RegisterController@registerPost')->name('user.register.post');
+Route::get('/cadastro', [RegisterController::class, 'register'])->name('user.register');
+Route::post('/cadastro', [RegisterController::class, 'registerPost'])->name('user.register.post');
 
-//Route::get('/carrinho', 'User\CartController@cart')->name('user.cart');
-
-//Route::get('/produtos/{id}', 'User\ProductController@product')->name('user.product');
-//Route::get('/produtos', 'User\ProductController@products')->name('user.products');
-
-Route::get('/sobre', 'User\AboutController@about')->name('user.about');
-Route::get('/contato', 'User\AboutController@contact')->name('user.contact');
-Route::post('/contact', 'User\ContactController@contact')->name('user.mail.contact');
-//Route::get('/depoimentos', 'User\AboutController@testimonies')->name('user.testimonies');
-
-//Route::get('/politica-reembolso', 'User\PolicyController@refund')->name('user.policy.refund');
-//Route::get('/seguranca-privacidade', 'User\PolicyController@security')->name('user.policy.security');
-//Route::get('/fretes-entregas', 'User\PolicyController@freight')->name('user.policy.freight');
+Route::get('/sobre', [AboutController::class,'about'])->name('user.about');
+Route::get('/contato', [AboutController::class,'contact'])->name('user.contact');
+Route::post('/contact', [ContactController::class,'contact'])->name('user.mail.contact');
+//Route::get('/depoimentos', [AboutController::class,'testimonies'])->name('user.testimonies');
 
 /** ROTAS AUTENTICADO */
 Route::group(['middleware' => 'auth:client'], function (){
-    Route::get('/minhaconta', 'User\AccountController@index')->name('user.account');
+    Route::get('/minhaconta', [AccountController::class, 'index'])->name('user.account');
 
-    Route::get('/minhaconta/cadastro', 'User\AccountController@edit')->name('user.account.edit');
-    Route::post('/minhaconta/cadastro', 'User\AccountController@editPost')->name('user.account.edit.post');
+    Route::get('/minhaconta/cadastro', [AccountController::class, 'edit'])->name('user.account.edit');
+    Route::post('/minhaconta/cadastro', [AccountController::class, 'editPost'])->name('user.account.edit.post');
 
-//    Route::get('/minhaconta/enderecos', 'User\AddressController@address')->name('user.account.address');
-//    Route::post('/minhaconta/enderecos', 'User\AddressController@addressPost')->name('user.account.address.post');
-//    Route::post('/minhaconta/enderecos/edit', 'User\AddressController@addressEdit')->name('user.account.address.edit');
-//    Route::post('/minhaconta/enderecos/delete', 'User\AddressController@addressDelete')->name('user.account.address.delete');
-//    Route::post('/minhaconta/enderecos/update_default', 'User\AddressController@addressDefault')->name('user.account.address.default');
+    Route::post('/minhaconta/depoimento', [TestimonyUser::class, 'newForUserTestimony'])->name('user.account.testimony');
 
-//    Route::get('/minhaconta/pedidos/finalizar', 'User\OrderController@checkout')->name('user.animal.checkout');
-//    Route::post('/minhaconta/pedidos/finalizar/enviar', 'User\OrderController@checkoutSend')->name('user.animal.checkout.send');
-//    Route::get('/minhaconta/pedidos/finalizar/{id}', 'User\OrderController@orderCreated')->name('user.animal.checkout.created');
+    Route::get('/minhaconta/animais', [AnimalUser::class, 'animals'])->name('user.account.animals');
+    Route::get('/minhaconta/animais/{id}',  [AnimalUser::class, 'animal'])->name('user.account.animal');
 
-//    Route::get('/minhaconta/pedidos', 'User\AccountController@orders')->name('user.account.orders');
-//    Route::post('/minhaconta/pedidos/recebido', 'User\OrderController@received')->name('user.orders.received');
-//    Route::get('/minhaconta/pedidos/{id}', 'User\OrderController@animal')->name('user.account.animal');
-
-//    Route::post('/minhaconta/pedidos/avaliar', 'User\RateController@rate')->name('user.rates.rate');
-
-    Route::post('/minhaconta/depoimento', 'User\TestimonyController@newForUserTestimony')->name('user.account.testimony');
-
-
-
-    Route::get('/minhaconta/animais', 'User\AnimalController@animals')->name('user.account.animals');
-    Route::get('/minhaconta/animais/{id}', 'User\OrderController@animal')->name('user.account.animal');
-
-
+    Route::get('/minhaconta/chat', [ChatController::class, 'animals'])->name('user.account.animals');
 
     //AJAX COM AUTH
-    Route::post('/queries/ajax/searchAdrress', 'User\OrderController@searchAdrress')->name('queries.ajax.searchAdrress');
-    Route::post('/queries/ajax/insertAdrress', 'User\AddressController@insertAjax')->name('queries.ajax.insertAdrress');
-    Route::post('/queries/ajax/updateAdrress', 'User\AddressController@updateAjax')->name('queries.ajax.updateAdrress');
-    Route::post('/queries/ajax/getAddress', 'User\AddressController@getAddressAjax')->name('queries.ajax.getAddress');
-    Route::post('/queries/ajax/getValueFreteUnitario', 'User\OrderController@getValueFreteUnitario')->name('queries.ajax.getValueFreteUnitario');
-    Route::post('/queries/ajax/insertCupom', 'User\OrderController@insertCupom')->name('queries.ajax.insertCupom');
-    Route::post('/queries/ajax/getValueParcel', 'User\OrderController@getValueParcelsQtyParcel')->name('queries.ajax.getValueParcel');
+    Route::post('/queries/ajax/getUsers', [ChatController::class, 'getUsers'])->name('queries.ajax.getUsers');
+    Route::post('/queries/ajax/getMessage', [ChatController::class, 'getMessage'])->name('queries.ajax.getMessage');
+    Route::post('/queries/ajax/sendMessage', [ChatController::class, 'sendMessage'])->name('queries.ajax.sendMessage');
 
 });
 
 /** ROTAS PARA CONSULTA AJAX SEM NECESSIDADE DE AUTH */
 Route::group(['prefix' => '/queries/ajax', 'name' => 'queries.ajax.'], function (){
-    Route::post('/addCart', 'User\CartController@add')->name('addCart');
-    Route::post('/updateCart', 'User\CartController@update')->name('updateCart');
-    Route::post('/deleteCart', 'User\CartController@delete')->name('deleteCart');
-    Route::post('/defineCepUser', 'User\CartController@defineCepUser')->name('defineCepUser');
+
 });
 
 /** ROTAS PARA RECEBIMENTO DE NOTIFICAÇÕES DO MERCADO PAGO */
 Route::group(['middleware' => '\App\Http\Middleware\VerifyCsrfToken'], function (){
-    Route::post('/pagseguro/notification/', 'User\MercadoPagoController@notification')->name('pagseguro_notification');
-    Route::post('/mercadopago/notification/', 'User\MercadoPagoController@notification')->name('mercadopago_notification');
+//    Route::post('/notification/', 'User\XXXXX@notification')->name('notification');
 });
 
 /**
