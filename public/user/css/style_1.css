@@ -3464,6 +3464,34 @@ p.text1{
     color: #9c9c9c;
     background: transparent;
 }
+.select2-container .select2-selection--single {
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+.uploaded-image button {
+    width: 32px
+}
+.uploaded-image button.primary-image:hover i {
+    color: #ffff00 !important;
+}
+.uploaded-image button.delete-image:hover i {
+    color: #ff0000 !important;
+}
+.uploaded-image.primary-image {
+    border: 2px solid #C0392B
+}
+small {
+    font-size: 11px;
+}
 
 /*--responsive--*/
 @media (max-width:1366px){

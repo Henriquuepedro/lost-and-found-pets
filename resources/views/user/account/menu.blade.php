@@ -17,6 +17,12 @@ $route = Route::getCurrentRoute()->getName();
                 </a>
             </li>
             <li class="acc-submenu-item">
+                <a class="acc-submenu-link @if($route == "user.account.chat") active @endif" href="{{ route('user.account.chat') }}">
+                    <i class="fas fa-comments icon-minhaconta"></i>
+                    Chat
+                </a>
+            </li>
+            <li class="acc-submenu-item">
                 <a class="acc-submenu-link popup-with-form" href="#" data-toggle="modal" data-target="#testimony">
                     <i class="fas fa-medal"></i>
                     Dê seu Depoimento

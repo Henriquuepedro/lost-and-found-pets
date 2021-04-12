@@ -15,7 +15,7 @@ class CreateAnimalsTable extends Migration
     {
         Schema::create('animals', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();;
+            $table->bigInteger('user_created')->unsigned();
             $table->string('name');
             $table->timestamps();
 

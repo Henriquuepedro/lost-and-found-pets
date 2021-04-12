@@ -12,7 +12,21 @@ class Animal extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'user_id'
+        'name',
+        'user_created',
+        'user_updated',
+        'name',
+        'species',
+        'sex',
+        'age',
+        'size',
+        'color',
+        'race',
+        'place',
+        'disappearance_date',
+        'phone_contact',
+        'email_contact',
+        'observation'
     ];
 
     /**
@@ -31,6 +45,20 @@ class Animal extends Model
 
     public function getAnimals($userId)
     {
-        return $this->where('user_id', $userId)->get();
+        return $this->select('name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation')
+                    ->leftJoin('animal_images',function ($join) {
+                        $join->on(function ($queryone){
+                            $queryone->on('animal_images.animal_id', 'animals.id');
+                            $queryone->where('animal_images.primary', true);
+                        });
+                    })
+                    ->where('animals.user_created', $userId)
+                    ->orderBy('animals.id', 'DESC')
+                    ->get();
+    }
+
+    public function insert($data)
+    {
+        return $this->create($data);
     }
 }
