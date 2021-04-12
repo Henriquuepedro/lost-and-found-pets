@@ -57,14 +57,19 @@ Route::group(['middleware' => 'auth:client'], function (){
     Route::post('/minhaconta/depoimento', [TestimonyUser::class, 'newForUserTestimony'])->name('user.account.testimony');
 
     Route::get('/minhaconta/animais', [AnimalUser::class, 'animals'])->name('user.account.animals');
+    Route::get('/minhaconta/animais/novo', [AnimalUser::class, 'create'])->name('user.account.animals.new');
+    Route::post('/minhaconta/animais/insert', [AnimalUser::class, 'insert'])->name('user.account.animals.insert');
     Route::get('/minhaconta/animais/{id}',  [AnimalUser::class, 'animal'])->name('user.account.animal');
 
-    Route::get('/minhaconta/chat', [ChatController::class, 'animals'])->name('user.account.animals');
+    Route::get('/minhaconta/chat', [ChatController::class, 'animals'])->name('user.account.chat');
 
     //AJAX COM AUTH
     Route::post('/queries/ajax/getUsers', [ChatController::class, 'getUsers'])->name('queries.ajax.getUsers');
     Route::post('/queries/ajax/getMessage', [ChatController::class, 'getMessage'])->name('queries.ajax.getMessage');
     Route::post('/queries/ajax/sendMessage', [ChatController::class, 'sendMessage'])->name('queries.ajax.sendMessage');
+    Route::post('/queries/ajax/getNewMessages', [ChatController::class, 'getNewMessages'])->name('queries.ajax.getNewMessages');
+    Route::post('/queries/ajax/getNewMessageConversation', [ChatController::class, 'getNewMessageConversation'])->name('queries.ajax.getNewMessageConversation');
+    Route::post('/queries/ajax/getNeighsCity', [AnimalUser::class, 'getNeighsCity'])->name('queries.ajax.getNeighsCity');
 
 });
 
@@ -210,7 +215,3 @@ Route::group(['middleware' => 'auth:admin', 'namespace' => 'Admin', 'prefix' => 
         Route::get('/google-analytics', '_TestController@gogleAnalytics')->name('test.notification');
     });
 });
-
-/** Jobs */
-Route::get('/sendMailBillet/{hash}', 'Job\JobController@sendMailBillet');
-Route::get('/cancelBillet/{hash}', 'Job\JobController@cancelBillet');

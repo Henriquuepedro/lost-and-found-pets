@@ -6,12 +6,106 @@
     <script>
         var userActive = 0;
         var animalActive = 0;
+        var userLogged = 0;
 
         $(function() {
-            getUsers();
-        })
+            getNewsConversations();
+            getNewsMessagesUsers();
 
-        const getUsers = () => {
+            setInterval(function(){
+                getNewsConversations();
+                getNewsMessagesUsers();
+                getNewsMessagesConversation();
+            }, 5000)
+        });
+
+        const getNewsMessagesConversation = async () => {
+            if (userActive && animalActive) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    url: window.location.origin + "/queries/ajax/getNewMessageConversation",
+                    data: { user: userActive, animal: animalActive },
+                    dataType: 'json',
+                    success: async response => {
+
+                        let date;
+
+                        if (!response.length) return false;
+
+                        const check = checkShowAlertNewMessage();
+
+                        await $(response).each(function (key, value) {
+                            date =  moment(value.created_at, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY HH:mm");
+
+                             if (!$(`.chat .chat-history li[message-id="${value.id}"]`).length) {
+                                 $('.chat .chat-history ul').append(`
+                                    <li message-id="${value.id}" class="d-flex justify-content-end flex-wrap">
+                                        <div class="message-data align-right w-100">
+                                            <span class="message-data-time">${date}</span>
+                                        </div>
+                                        <div class="message other-message float-right">${value.content}</div>
+                                    </li>
+                                `);
+
+                             }
+                        });
+
+                        if (check)
+                            $('.chat-history').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+
+                    }, error: (e) => {
+                        console.log(e);
+                    }
+                });
+            }
+        }
+
+        const getNewsMessagesUsers = async () => {
+            let usersAnimals = [];
+            let from;
+            $('ul.list li').each(function (){
+                from = parseInt($(this).attr('user-id'));
+
+                if (!$(this).find('div.status').length && from != userActive)
+                    usersAnimals.push({
+                        'from': from,
+                        'animal_id': parseInt($(this).attr('animal-id'))
+                    });
+            });
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: window.location.origin + "/queries/ajax/getNewMessages",
+                data: { usersAnimals },
+                dataType: 'json',
+                success: async response => {
+
+                    //console.log(response);
+
+                    let el;
+
+                    await $(response).each(function (key, value) {
+                        if (value.from != userActive) {
+                            el = $(`.list li[user-id="${value.from}"][animal-id="${value.animal_id}"]`);
+                            if (!el.find('div.status').length) {
+                                el.find('.name').append('<div class="status"><i class="fa fa-circle"></i></div>');
+                            }
+                        }
+                    });
+
+                }, error: (e) => {
+                    console.log(e);
+                }
+            });
+        }
+
+        const getNewsConversations = async () => {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -22,23 +116,53 @@
                 dataType: 'json',
                 success: response => {
 
+                    //console.log(response);
+                    if (response.users.length == 0) {
+                        $('.people-list ul.list').empty().append(`
+                            <li class="text-center no-users">
+                                <h4 class="text-white">Você ainda não possui conversas.</h4>
+                            </li>`);
+                        $('.people-list .load-users').hide();
+                    }
+
                     let listUsers = '';
+
+                    if (response.users.length === $('.people-list ul.list li[user-id]').length) {
+                        //console.log('Nenhuma nova conversa encontrada.')
+                        return false;
+                    }
+
+                    let userActiveClass = null;
+                    let animalActiveClass = null;
+                    let active, read = '';
+
+                    if ($('.people-list .list li.active').length) {
+                        userActiveClass = $('.list li').attr('user-id');
+                        animalActiveClass = $('.list li').attr('animal-id');
+                    }
+
                     $(response.users).each(function (key, value) {
+
+                        active = userActiveClass == value.id && animalActiveClass == value.animal_id ? 'active' : '';
+                        read    = value.no_read ? '<div class="status"><i class="fa fa-circle"></i></div>' : '';
+
                         listUsers += `
-                        <li class="clearfix">
-                            <div class="about" user-id="${value.id}" animal-id="1" user-name="${value.name}">
+                        <li class="${active}" user-id="${value.id}" animal-id="${value.animal_id}" user-name="${value.name}">
+                            <div class="about">
                                 <div class="name d-flex justify-content-start align-items-center">
                                     ${value.name}
-                                    <div class="status">
-                                        <i class="fa fa-circle"></i>
-                                    </div>
+                                    ${read}
                                 </div>
-                                <div class="ad">Animal Teste ${value.id}</div>
+                                <div class="ad">${value.animal_name}</div>
                             </div>
                         </li>`
-                    })
+                    });
+
+                    $('.people-list .load-users').hide();
 
                     $('.people-list ul.list').empty().append(listUsers);
+
+                    userLogged = response.userLogged;
 
                 }, error: (e) => {
                     console.log(e);
@@ -46,10 +170,30 @@
             });
         }
 
-        $('.people-list ul.list').on('click', '.about', function(){
+        /**
+         * @param showBtn
+         * @return boolean true=está no fim.
+         */
+        const checkShowAlertNewMessage = (showBtn = true) => {
+            const scrollUser = $('.chat-history').scrollTop() + $('.chat-history').height();
+            const scrollChat = $('.chat-history ul').height();
+
+            if (scrollChat <= scrollUser) {
+                $('.alert-new-message').css('display', 'none');
+                return true;
+            } else if(showBtn) {
+                $('.alert-new-message').css('display', 'flex');
+            }
+
+            return false;
+        }
+
+        $('.people-list ul.list').on('click', 'li:not(.no-users)', function(){
             const userId = $(this).attr('user-id');
             const animalId = $(this).attr('animal-id');
             const userName = $(this).attr('user-name');
+
+            if (userActive == userId && animalActive == animalId) return false;
 
             userActive = userId;
             animalActive = animalId;
@@ -57,6 +201,10 @@
             $('.people-list .list li').removeClass('active');
             $(this).closest('li').addClass('active');
             $('.chat .chat-message textarea, .chat .chat-message button').show();
+            $('.chat .chat-history ul').empty();
+            $('.chat .load-chat').css('display', 'flex');
+            $(this).find('.status').remove();
+            $('.people-list .load-users').removeAttr('style');
 
             $.ajax({
                 headers: {
@@ -71,20 +219,21 @@
                     let listMessages = '';
                     let date;
                     await $(response).each(function (key, value) {
+                        console.log(value);
                         date =  moment(value.created_at, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY HH:mm");
                         if (value.from == userId) {
                             listMessages += `
-                                <li class="clearfix">
-                                    <div class="message-data align-right">
+                                <li message-id="${value.id}" class="d-flex justify-content-end flex-wrap">
+                                    <div class="message-data align-right w-100">
                                         <span class="message-data-time">${date}</span>
                                     </div>
-                                    <div class="message other-message float-right">${value.content}</div>
+                                    <div class="message other-message">${value.content}</div>
                                 </li>
                             `;
                         } else {
                             listMessages += `
-                                <li>
-                                    <div class="message-data">
+                                <li message-id="${value.id}" class="d-flex justify-content-start flex-wrap">
+                                    <div class="message-data w-100">
                                         <span class="message-data-time">${date}</span>
                                     </div>
                                     <div class="message my-message">${value.content}</div>
@@ -98,6 +247,10 @@
 
                     $('.chat .chat-history ul').empty().append(listMessages);
                     $('.chat-history').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+
+                    $('.chat .load-chat').hide();
+
+                    $('.people-list .load-users').hide();
 
                 }, error: (e) => {
                     console.log(e);
@@ -124,11 +277,11 @@
                 dataType: 'json',
                 success: async () => {
 
-                    const dateSend =  moment().format("YYYY-MM-DD HH:mm");
+                    const dateSend =  moment().format("DD/MM/YYYY HH:mm");
 
                     await $('.chat .chat-history ul').append(`
                         <li>
-                            <div class="message-data">
+                            <div class="message-data w-100">
                                 <span class="message-data-time">${dateSend}</span>
                             </div>
                             <div class="message my-message">${content}</div>
@@ -143,6 +296,15 @@
                     $(this).attr('disabled', false);
                 }
             });
+        });
+
+        $('.chat-history').on('scroll', function(){
+            checkShowAlertNewMessage(false);
+        });
+
+        $('.alert-new-message button').click(function (){
+            $('.chat-history').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+            $('.alert-new-message').css('display', 'hide');
         });
 
     </script>
@@ -242,10 +404,12 @@
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
             color: #434651;
+            padding: 0px;
         }
         .chat .chat-header {
-            padding: 20px;
+            padding: 10px;
             border-bottom: 2px solid white;
+            cursor: default !important;
         }
         .chat .chat-header img {
             float: left;
@@ -269,7 +433,7 @@
             margin-top: 12px;
         }
         .chat .chat-history {
-            padding: 30px 30px 20px;
+            padding: 10px 25px 10px;
             border-bottom: 2px solid white;
             overflow-y: scroll;
             height: 459px;
@@ -283,11 +447,11 @@
         }
         .chat .chat-history .message {
             color: white;
-            padding: 18px 20px;
-            line-height: 26px;
-            font-size: 16px;
+            padding: 18px 15px;
+            line-height: 15px;
+            font-size: 15px;
             border-radius: 7px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             width: 90%;
             position: relative;
         }
@@ -327,19 +491,12 @@
             resize: none;
             display: none;
         }
-        .chat .chat-message .fa-file-o,
-        .chat .chat-message .fa-file-image-o {
-            font-size: 16px;
-            color: gray;
-            cursor: pointer;
-        }
         .chat .chat-message button {
             float: right;
             color: #94c2ed;
             font-size: 16px;
             text-transform: uppercase;
             border: none;
-            cursor: pointer;
             font-weight: bold;
             background: #f2f5f8;
             display: none;
@@ -378,7 +535,7 @@
             float: right;
         }
 
-        .clearfix:after {
+        .list li:after {
             visibility: hidden;
             display: block;
             font-size: 0;
@@ -387,16 +544,61 @@
             height: 0;
         }
 
-        .clearfix:hover {
+        .list li:hover {
             cursor: pointer;
         }
-        .clearfix:hover .name,
-        .clearfix:hover .ad {
+        .list li:hover .name,
+        .list li:hover .ad {
             color: #fff;
         }
         .people-list ul li.active .name,
         .people-list ul li.active .ad {
             color: #fff;
+        }
+        .people-list .load-users {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 35px;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .chat .load-chat {
+            display: none;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 35px;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .alert-new-message {
+            position: absolute;
+            top: 85px;
+            display: none;
+            justify-content: center;
+            width: 100%;
+        }
+        .alert-new-message button {
+            border: 1px solid #972519;
+            background-color: #c0392b;
+            border-radius: 15px;
+            padding: 3px 30px;
+            color: #fff;
+            box-shadow: 12px 12px 28px -7px #000000;
+        }
+        .alert-new-message button:hover {
+            border: 1px solid #79190f;
+            background-color: #972519;
+        }
+        .alert-new-message button:active {
+            border: 1px solid #641109;
+            background-color: #79190f;
         }
     </style>
 @endsection
@@ -408,13 +610,10 @@
             <div class="row mb-5">
 
                 <div class="people-list float-left col-md-3" id="people-list">
-                    <div class="search">
-                        <input type="text" placeholder="search" />
-                        <i class="fa fa-search"></i>
+                    <ul class="list"></ul>
+                    <div class="col-md-12 load-users">
+                        <i class="fa fa-sync fa-spin"></i>
                     </div>
-                    <ul class="list">
-
-                    </ul>
                 </div>
 
                 <div class="chat float-right col-md-9">
@@ -426,15 +625,21 @@
                     </div> <!-- end chat-header -->
 
                     <div class="chat-history">
-                        <ul></ul>
+                        <ul class="mb-0"></ul>
+                        <div class="alert-new-message">
+                            <button><i class="fas fa-angle-double-down"></i> Você tem novas mensagens</button>
+                        </div>
                     </div> <!-- end chat-history -->
 
                     <div class="chat-message clearfix d-flex justify-content-between">
-                        <textarea name="message-to-send" class="col-md-11 mb-0" id="message-to-send" placeholder ="Type your message" rows="3" style="border-bottom-right-radius: 0;border-top-right-radius: 0"></textarea>
+                        <textarea name="message-to-send" class="col-md-11 mb-0" id="message-to-send" placeholder ="Digite sua mensagem" rows="3" style="border-bottom-right-radius: 0;border-top-right-radius: 0"></textarea>
 
                         <button class="col-md-1" id="sendMessage" style="background-color: #275b8c;border-bottom-right-radius: 5px;border-top-right-radius: 5px"><i class="fas fa-paper-plane"></i></button>
 
                     </div> <!-- end chat-message -->
+                    <div class="col-md-12 load-chat">
+                        <i class="fa fa-sync fa-spin"></i>
+                    </div>
 
                 </div> <!-- end chat -->
 

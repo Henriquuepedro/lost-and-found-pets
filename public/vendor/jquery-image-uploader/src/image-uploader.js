@@ -86,7 +86,7 @@
                 }).appendTo($container),
 
                 // Create the icon and append it to the text container
-                $i = $('<i>', {class: 'material-icons', text: 'cloud_upload'}).appendTo($textContainer),
+                $i = $('<i>', {class: 'fas fa-cloud-upload-alt'}).appendTo($textContainer),
 
                 // Create the text and append it to the text container
                 $span = $('<span>', {text: plugin.settings.label}).appendTo($textContainer);
@@ -134,12 +134,12 @@
                 // Create the primary image button
                 $button_pr = $('<button>', {class: 'primary-image'}).appendTo($container);
                 // Create the primary image icon
-                $('<i>', {class: 'material-icons text-primary', text: 'favorite'}).appendTo($button_pr);
+                $('<i>', {class: 'fas fa-heart'}).appendTo($button_pr);
 
                 // Create the delete button
                 $button_del = $('<button>', {class: 'delete-image'}).appendTo($container);
                 // Create the delete icon
-                $('<i>', {class: 'material-icons text-danger', text: 'clear'}).appendTo($button_del);
+                $('<i>', {class: 'fas fa-times'}).appendTo($button_del);
 
             // If the images are preloaded
             if (plugin.settings.preloaded.length) {
@@ -226,6 +226,7 @@
                         $('[name="primaryImage"]').val(valuePrImage);
                     }
                 });
+                if (countPrImgDelete === 0) $('[name="images[]"]').val('');
 
             });
 

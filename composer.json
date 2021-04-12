@@ -12,9 +12,7 @@
         "barryvdh/laravel-dompdf": "^0.8.6",
         "fideloper/proxy": "^4.2",
         "firebase/php-jwt": "^5.2",
-        "flyingluscas/correios-php": "^2.3",
         "fruitcake/laravel-cors": "^1.0",
-        "google/apiclient": "^2.7",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.5",
         "jeroennoten/laravel-adminlte": "^3.2",
@@ -22,10 +20,7 @@
         "laravel/legacy-factories": "^1.1",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "phpmailer/phpmailer": "^6.1",
-        "picqer/php-barcode-generator": "^2.0",
-        "stavarengo/php-sigep-fpdf": "dev-master",
-        "stichoza/google-translate-php": "^4.1"
+        "phpmailer/phpmailer": "^6.1"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

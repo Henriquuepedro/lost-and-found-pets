@@ -8,12 +8,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <html>
 <head>
     <title>Free Smarty Website Template | Home :: w3layouts</title>
-    <link href="{{ asset('user/css/style_1.css') }}" rel="stylesheet" type="text/css" media="all" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link href="{{ asset('user/css/style_1.css') }}" rel="stylesheet" type="text/css" media="all" />
     @yield('css')
 </head>
 <body>
@@ -23,10 +24,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <div class="header-top">
             <div class="cssmenu">
                 <ul>
-                    <li class="{{ Route::currentRouteName() == "user.home" ? 'active' : ''}}"><a href="{{ route('user.home') }}"><span>Início</span></a></li>
-                    <li><a href="#"><span>Anunciar</span></a></li>
-                    <li><a href="#"><span>Localizar</span></a></li>
-                    <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}"><a href="{{ route('user.about') }}"><span>Sobre</span></a></li>
+                    <li class="{{ Route::currentRouteName() == "user.home" ? 'active' : ''}}">
+                        <a href="{{ route('user.home') }}"><span>Início</span></a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == "user.account.animals.new" ? 'active' : ''}}">
+                        <a href="{{ route('user.account.animals.new') }}"><span>Anunciar</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><span>Localizar</span></a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}">
+                        <a href="{{ route('user.about') }}"><span>Sobre</span></a>
+                    </li>
                     <div class="clear"></div>
                 </ul>
                 <ul class="menu-small">
@@ -95,6 +104,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
 <script src="{{ asset('user/js/main.js') }}"></script>
 @yield('js')
 </body>
