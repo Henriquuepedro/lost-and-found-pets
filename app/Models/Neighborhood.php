@@ -39,4 +39,9 @@ class Neighborhood extends Model
     {
         return $this->where('city_id', $city)->orderBy('name', 'ASC')->get();
     }
+
+    public function getNeigh($id)
+    {
+        return $this->find($id);
+    }
 }

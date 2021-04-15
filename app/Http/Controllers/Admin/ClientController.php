@@ -36,7 +36,7 @@ class ClientController extends Controller
 
     public function view(int $id)
     {
-        $client = $this->client->getClient($id);
+        $client = $this->client->getUser($id);
         if(!$client) return redirect()->route('admin.clients');
 
         $dataClient = array(

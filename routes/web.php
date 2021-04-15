@@ -47,6 +47,12 @@ Route::get('/contato', [AboutController::class,'contact'])->name('user.contact')
 Route::post('/contact', [ContactController::class,'contact'])->name('user.mail.contact');
 //Route::get('/depoimentos', [AboutController::class,'testimonies'])->name('user.testimonies');
 
+Route::get('/localizar', [AnimalUser::class,'list'])->name('user.animals.list');
+Route::get('/localizar/{id}', [AnimalUser::class,'searchFind'])->name('user.animals.searchFind');
+
+
+Route::post('/queries/ajax/getNeighsCity', [AnimalUser::class, 'getNeighsCity'])->name('queries.ajax.getNeighsCity');
+
 /** ROTAS AUTENTICADO */
 Route::group(['middleware' => 'auth:client'], function (){
     Route::get('/minhaconta', [AccountController::class, 'index'])->name('user.account');
@@ -69,7 +75,6 @@ Route::group(['middleware' => 'auth:client'], function (){
     Route::post('/queries/ajax/sendMessage', [ChatController::class, 'sendMessage'])->name('queries.ajax.sendMessage');
     Route::post('/queries/ajax/getNewMessages', [ChatController::class, 'getNewMessages'])->name('queries.ajax.getNewMessages');
     Route::post('/queries/ajax/getNewMessageConversation', [ChatController::class, 'getNewMessageConversation'])->name('queries.ajax.getNewMessageConversation');
-    Route::post('/queries/ajax/getNeighsCity', [AnimalUser::class, 'getNeighsCity'])->name('queries.ajax.getNeighsCity');
 
 });
 

@@ -9,7 +9,7 @@
         var userLogged = 0;
 
         $(function() {
-            getNewsConversations();
+            getNewsConversations(true);
             getNewsMessagesUsers();
 
             setInterval(function(){
@@ -105,7 +105,7 @@
             });
         }
 
-        const getNewsConversations = async () => {
+        const getNewsConversations = async (init = false) => {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -135,6 +135,7 @@
                     let userActiveClass = null;
                     let animalActiveClass = null;
                     let active, read = '';
+                    let start = {};
 
                     if ($('.people-list .list li.active').length) {
                         userActiveClass = $('.list li').attr('user-id');
@@ -143,26 +144,40 @@
 
                     $(response.users).each(function (key, value) {
 
-                        active = userActiveClass == value.id && animalActiveClass == value.animal_id ? 'active' : '';
-                        read    = value.no_read ? '<div class="status"><i class="fa fa-circle"></i></div>' : '';
+                        if (!$(`.list li[user-id="${value.user_id}"][animal-id="${value.animal_id}"]`).length) {
 
-                        listUsers += `
-                        <li class="${active}" user-id="${value.id}" animal-id="${value.animal_id}" user-name="${value.name}">
-                            <div class="about">
-                                <div class="name d-flex justify-content-start align-items-center">
-                                    ${value.name}
-                                    ${read}
+                            if (value.start && init) start = {'user': value.user_id, 'animal': value.animal_id};
+
+                            active = userActiveClass == value.user_id && animalActiveClass == value.animal_id ? 'active' : '';
+                            read = value.no_read ? '<div class="status"><i class="fa fa-circle"></i></div>' : '';
+
+                            listUsers += `
+                            <li class="${active}" user-id="${value.user_id}" animal-id="${value.animal_id}" user-name="${value.user_name}">
+                                <div class="about">
+                                    <div class="name d-flex justify-content-start align-items-center">
+                                        ${value.user_name}
+                                        ${read}
+                                    </div>
+                                    <div class="ad">${value.name}</div>
                                 </div>
-                                <div class="ad">${value.animal_name}</div>
-                            </div>
-                        </li>`
+                            </li>`
+                        }
                     });
 
                     $('.people-list .load-users').hide();
 
-                    $('.people-list ul.list').empty().append(listUsers);
+                    if (!$('.people-list ul.list li[user-id]').length)
+                        $('.people-list ul.list').empty();
+
+                    $('.people-list ul.list').prepend(listUsers);
 
                     userLogged = response.userLogged;
+
+                    if (start.hasOwnProperty("user")) {
+                        setTimeout(() => {
+                            $(`.people-list ul.list li[user-id="${start.user}"][animal-id="${start.animal}"]`).trigger('click');
+                        }, 250);
+                    }
 
                 }, error: (e) => {
                     console.log(e);
@@ -243,7 +258,7 @@
                     });
 
                     $('.chat .chat-header .chat-about .chat-with').text(userName);
-                    $('.chat .chat-header .chat-about .chat-num-messages').text(response.length + ' mensagens');
+                    //$('.chat .chat-header .chat-about .chat-num-messages').text(response.length + ' mensagens');
 
                     $('.chat .chat-history ul').empty().append(listMessages);
                     $('.chat-history').animate({scrollTop: $(window).scrollTop() + $(window).height()});
@@ -600,6 +615,25 @@
             border: 1px solid #641109;
             background-color: #79190f;
         }
+        #sendMessage {
+            min-height: 50px;
+            background-color: #275b8c;
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px
+        }
+        #message-to-send {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0
+        }
+
+        @media (max-width:768px){
+            #sendMessage {
+                border-radius: 0 0 5px 5px;
+            }
+            #message-to-send {
+                border-radius: 5px 5px 0 0;
+            }
+        }
     </style>
 @endsection
 
@@ -631,10 +665,10 @@
                         </div>
                     </div> <!-- end chat-history -->
 
-                    <div class="chat-message clearfix d-flex justify-content-between">
-                        <textarea name="message-to-send" class="col-md-11 mb-0" id="message-to-send" placeholder ="Digite sua mensagem" rows="3" style="border-bottom-right-radius: 0;border-top-right-radius: 0"></textarea>
+                    <div class="chat-message clearfix d-flex justify-content-between flex-wrap">
+                        <textarea name="message-to-send" class="col-md-11 mb-0" id="message-to-send" placeholder ="Digite sua mensagem" rows="3"></textarea>
 
-                        <button class="col-md-1" id="sendMessage" style="background-color: #275b8c;border-bottom-right-radius: 5px;border-top-right-radius: 5px"><i class="fas fa-paper-plane"></i></button>
+                        <button class="col-md-1" id="sendMessage"><i class="fas fa-paper-plane"></i></button>
 
                     </div> <!-- end chat-message -->
                     <div class="col-md-12 load-chat">

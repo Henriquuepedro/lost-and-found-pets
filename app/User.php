@@ -52,7 +52,7 @@ class User extends Authenticatable
         return $this->get();
     }
 
-    public function getClient($id)
+    public function getUser($id)
     {
         return $this->find($id);
     }

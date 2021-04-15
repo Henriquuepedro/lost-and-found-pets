@@ -34,4 +34,9 @@ class City extends Model
     {
         return $this->where('active', true)->orderBy('name', 'ASC')->get();
     }
+
+    public function getCity($id)
+    {
+        return $this->find($id);
+    }
 }

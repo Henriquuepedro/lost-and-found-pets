@@ -10,19 +10,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Conversation;
 
 class ChatController extends Controller
 {
     private $message;
+    private $conversation;
+    private $user;
 
-    public function __construct(Message $message)
+    public function __construct(Message $message, Conversation $conversation, User $user)
     {
         $this->message = $message;
+        $this->conversation = $conversation;
+        $this->user = $user;
     }
 
     public function animals()
     {
 //        DB::enableQueryLog();
+//        $userId = auth()->guard('client')->user()->id;
+//        $users = $this->conversation->getConversations($userId);
+//        foreach ($users as $key => $user) {
+//            $userMessage = $this->user->getUser($user['user_start'] == $userId ? $user['user_animal'] : $user['user_start']);
+//            $users[$key]['user_name'] = $userMessage['name'];
+//            $users[$key]['user_id'] = $userMessage['id'];
+//        }
+//        dd($users);
 //        dd(DB::getQueryLog());
 
         return view('user.chat.index');
@@ -31,9 +44,13 @@ class ChatController extends Controller
     public function getUsers()
     {
         $userId = auth()->guard('client')->user()->id;
-        $users = $this->message->getMessagesUser($userId);
+        $users = $this->conversation->getConversations($userId);
         foreach ($users as $key => $user) {
-            $users[$key]['no_read'] = $this->message->getMessageNotRead($user['id'], $userId, $user['animal_id']);
+            $userMessage = $this->user->getUser($user['user_start'] == $userId ? $user['user_animal'] : $user['user_start']);
+            $users[$key]['user_name'] = $userMessage['name'];
+            $users[$key]['user_id'] = $userMessage['id'];
+            $users[$key]['no_read'] = $this->message->getMessageNotRead($userMessage['id'], $userId, $user['animal_id']);
+            $users[$key]['start'] = time() < strtotime('+10 seconds',strtotime($user['created_at']));
         }
 
         return response()->json([
@@ -64,6 +81,13 @@ class ChatController extends Controller
         $userTo     = $request->userTo;
         $animalTo   = $request->animalTo;
         $content    = filter_var($request['content'], FILTER_SANITIZE_STRIPPED);
+
+        if (!$this->conversation->getConversation($userFrom, $userTo, $animalTo))
+            $this->conversation->insert([
+                'user_start'    => $userFrom,
+                'user_animal'   => $userTo,
+                'animal_id'     => $animalTo
+            ]);
 
         $message = new Message();
 
