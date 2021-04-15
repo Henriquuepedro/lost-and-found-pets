@@ -126,14 +126,7 @@
                     $('#neigh').append(options).attr('disabled', false);
 
                 }, error: () => {
-                    console.log("Acorreu um problema, aguarde enquanto tentamos novamente");
-                    Toast.fire({
-                        icon: 'warning',
-                        title: "Acorreu um problema, aguarde enquanto tentamos novamente"
-                    })
-                    enableButtonsCart();
-                    $('.update-qty').trigger('mouseleave');
-                    element.find('.update-qty').trigger('click');
+                    console.log("Acorreu um problema, tente mais tarde!");
                 }
             });
         });

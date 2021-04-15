@@ -30,8 +30,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <li class="{{ Route::currentRouteName() == "user.account.animals.new" ? 'active' : ''}}">
                         <a href="{{ route('user.account.animals.new') }}"><span>Anunciar</span></a>
                     </li>
-                    <li>
-                        <a href="#"><span>Localizar</span></a>
+                    <li class="{{ Route::currentRouteName() == "user.animals.list" ? 'active' : ''}}">
+                        <a href="{{ route('user.animals.list') }}"><span>Localizar</span></a>
                     </li>
                     <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}">
                         <a href="{{ route('user.about') }}"><span>Sobre</span></a>

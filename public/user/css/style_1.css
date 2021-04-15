@@ -3492,6 +3492,18 @@ p.text1{
 small {
     font-size: 11px;
 }
+.no-padding {
+    padding: 0 !important;
+}
+
+textarea:focus, input:focus, select:focus {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+b {
+    font-weight: bold;
+}
 
 /*--responsive--*/
 @media (max-width:1366px){
@@ -3712,6 +3724,9 @@ small {
 	}
 }
 @media (max-width:768px){
+    .cssmenu .menu-small {
+        top: 30px;
+    }
 	.wrap{
 		width:90%;
 	}

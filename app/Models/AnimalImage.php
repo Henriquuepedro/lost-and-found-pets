@@ -104,4 +104,9 @@ class AnimalImage extends Model
             ->save("{$uploadPath}/thumbnail_{$imageName}");
     }
 
+    public function getImagesAnimal($animal_id)
+    {
+        return $this->where('animal_id', $animal_id)->orderBy('primary')->get();
+    }
+
 }
