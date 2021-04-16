@@ -7,11 +7,20 @@
     <script src="{{ asset('vendor/jquery-mask/jquery.mask.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('vendor/jquery-image-uploader/src/image-uploader.js') }}"></script>
     <script type="text/javascript" src="{{ asset('vendor/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="text/javascript" src="https://npmcdn.com/flatpickr@4.6.6/dist/l10n/pt.js"></script>
     <script>
         $(function(){
             $('#phone_contact').mask('(00) 0000-00009');
-            $('#disappearance_date').mask('00/00/0000 00:00');
             $('#neigh, #city').select2();
+            $('.flatpickr').flatpickr({
+                enableTime: false,
+                dateFormat: "d/m/Y",
+                wrap: true,
+                clickOpens: false,
+                allowInput: true,
+                locale: "pt"
+            });
             CKEDITOR.replace('observation', {
                 entities: false,
                 toolbar: [
@@ -43,14 +52,14 @@
             $('.input-images').imageUploader();
 
             $('[name="images[]"]').on('change', function(){
-                if($('.image-uploader .uploaded .uploaded-image').length == 0)
+                if ($('.image-uploader .uploaded .uploaded-image').length == 0)
                     $('.upload-text').css("border", "1px solid #bf1616");
                 else
                     $('.upload-text').css("border", "unset");
             });
 
             $('.uploaded-image .delete-image').on('click', function () {
-                if($('.image-uploader .uploaded .uploaded-image').length == 0)
+                if ($('.image-uploader .uploaded .uploaded-image').length == 0)
                     $('.upload-text').css("border", "1px solid #bf1616");
                 else
                     $('.upload-text').css("border", "unset");
@@ -63,9 +72,6 @@
             errorLabelContainer: $("ol", $("div.error-form")),
             wrapper: 'li',
             rules: {
-                images: {
-                    images: true
-                },
                 name: {
                     required: true
                 },
@@ -74,30 +80,25 @@
                 },
                 neigh: {
                     required: true
-                },
-                place: {
-                    required: true,
                 }
             },
             invalidHandler: function(event, validator) {
                 $('.upload-text').css("border", "unset");
                 $('.note-editor.card').css("border", "1px solid #a9a9a9");
-                if(!CKEDITOR.instances.observation.getData().length)
+                /*if (!CKEDITOR.instances.observation.getData().length)
                     createListError('description', 'Digite a descrição do animal corretamente', '.note-editor.card');
-                if($('.image-uploader .uploaded .uploaded-image').length == 0)
-                    createListError('images', 'Selecione pelo menos uma imagem para continuar', '.upload-text');
+                if ($('.image-uploader .uploaded .uploaded-image').length == 0)
+                    createListError('images', 'Selecione pelo menos uma imagem para continuar', '.upload-text');*/
             },
             submitHandler: function(form) {
                 $('.upload-text').css("border", "unset");
                 $('.note-editor.card').css("border", "1px solid #a9a9a9");
-                if(!CKEDITOR.instances.observation.getData().length)
+                /*if (!CKEDITOR.instances.observation.getData().length)
                     createListError('description', 'Digite a descrição do animal corretamente', '.note-editor.card');
-                if($('.image-uploader .uploaded .uploaded-image').length == 0)
-                    createListError('images', 'Selecione pelo menos uma imagem para continuar', '.upload-text');
-                if ((parseFloat($('#width').val()) + parseFloat($('#height').val()) + parseFloat($('#depth').val())) > 200)
-                    createListError('width', 'A soma da largura + altura + comprimento não pode ser maior que 200', '#width, #height, #depth');
+                if ($('.image-uploader .uploaded .uploaded-image').length == 0)
+                    createListError('images', 'Selecione pelo menos uma imagem para continuar', '.upload-text');*/
 
-                if($('.image-uploader .uploaded .uploaded-image').length != 0 && CKEDITOR.instances.observation.getData().length != 0) form.submit();
+                form.submit();
             }
         });
 
@@ -143,6 +144,8 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('vendor/jquery-image-uploader/src/image-uploader.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
     <style>
         .image-uploader::after {
             content: 'CLIQUE PARA ADICIONAR IMAGENS';
@@ -186,8 +189,43 @@
                 flex-wrap: wrap;
             }
         }
+        @media (max-width: 768px) {
+            .input-images .upload-text span {
+                text-align: center;
+            }
+            .image-uploader {
+                min-height: 275px;
+            }
+        }
         .error-form ol {
             list-style: disc
+        }
+        .flatpickr a.input-button,
+        .flatpickr button.input-button{
+            height: calc(1.5em + 0.75rem + 3px);
+            width: 50%;
+            /*text-align: center;*/
+            /*padding-top: 13%;*/
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flatpickr a.input-button:last-child,
+        .flatpickr button.input-button:last-child{
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        #disappearance_date {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+        .btn-orange {
+            background-color: #C0392B;
+        }
+        .btn-orange:hover {
+            background-color: #9a2e23;
         }
     </style>
 @endsection
@@ -211,10 +249,10 @@
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-6">
                                     <label for="name">Nome do Animal</label>
-                                    <input type="text" class="form-control" maxlength="256" name="name" id="name" title="É preciso informar o nome">
+                                    <input type="text" class="form-control" maxlength="256" name="name" id="name" title="É preciso informar o nome" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="species">Espécie</label>
+                                    <label for="species">Espécie <small>(<b>Exemplo</b>: Cachorro, Gato, Etc...)</small></label>
                                     <input type="text" class="form-control" maxlength="256" name="species" id="species">
                                 </div>
                                 <div class="form-group col-md-3">
@@ -236,7 +274,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="size">Porte</label>
-                                    <input type="text" class="form-control" maxlength="4" name="size" id="size">
+                                    <input type="text" class="form-control" maxlength="7" name="size" id="size">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="color">Cor</label>
@@ -250,9 +288,19 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 d-flex flex-wrap">
-                                <div class="form-group col-md-3">
-                                    <label for="disappearance_date">Data do desaparecimento</label>
-                                    <input type="text" class="form-control" maxlength="256" name="disappearance_date" id="disappearance_date">
+                                <div class="form-group flatpickr col-md-3">
+                                    <label class="label-date-btns">Data do desaparecimento</label>
+                                    <div class="d-flex">
+                                    <input type="tel" name="disappearance_date" id="disappearance_date" class="form-control col-md-9" value="{{ date('d/m/Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM" im-insert="false" data-input>
+                                    <div class="input-button-calendar col-md-3 no-padding d-flex">
+                                        <a class="input-button pull-left btn-orange" title="toggle" data-toggle>
+                                            <i class="fa fa-calendar text-white"></i>
+                                        </a>
+                                        <a class="input-button pull-right btn-orange" title="clear" data-clear>
+                                            <i class="fa fa-times text-white"></i>
+                                        </a>
+                                    </div>
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="phone_contact">Telefone para contato</label>
@@ -268,7 +316,7 @@
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-3">
                                     <label for="city">Cidade do desaparecimento</label>
-                                    <select class="form-control" name="city" id="city" title="É preciso informar a cidade">
+                                    <select class="form-control" name="city" id="city" title="É preciso informar a cidade" required>
                                         <option value="">Selecione a cidade</option>
                                         @foreach($cities as $city)
                                             <option value="{{ $city['id'] }}">{{ $city['name'] }}</option>
@@ -277,20 +325,20 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="neigh">Bairro do desaparecimento</label>
-                                    <select class="form-control" name="neigh" id="neigh" title="É preciso informar o bairro" disabled>
+                                    <select class="form-control" name="neigh" id="neigh" title="É preciso informar o bairro" disabled required>
                                         <option value="">Selecione a bairro</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="place">Local de desaparecimento</label>
-                                    <textarea class="form-control" name="place" id="place" title="É preciso informar o local do desaparecimento"></textarea>
+                                    <textarea class="form-control" name="place" id="place"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-12">
-                                    <label for="description">Imagens do Animal</label><br/>
+                                    <label>Imagens do Animal</label><br/>
                                     <small class="text-danger">Adicione imagens com extensões png, jpeg, jpg e gif.</small>
                                     <div class="input-field">
                                         <div class="input-images" style="padding-top: .5rem;"></div>

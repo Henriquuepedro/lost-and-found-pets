@@ -21,31 +21,37 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <div class="wrap-box"> </div>
 <div class="header">
     <div class="wrap">
-        <div class="header-top">
-            <div class="cssmenu">
-                <ul>
-                    <li class="{{ Route::currentRouteName() == "user.home" ? 'active' : ''}}">
-                        <a href="{{ route('user.home') }}"><span>Início</span></a>
-                    </li>
-                    <li class="{{ Route::currentRouteName() == "user.account.animals.new" ? 'active' : ''}}">
-                        <a href="{{ route('user.account.animals.new') }}"><span>Anunciar</span></a>
-                    </li>
-                    <li class="{{ Route::currentRouteName() == "user.animals.list" ? 'active' : ''}}">
-                        <a href="{{ route('user.animals.list') }}"><span>Localizar</span></a>
-                    </li>
-                    <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}">
-                        <a href="{{ route('user.about') }}"><span>Sobre</span></a>
-                    </li>
-                    <div class="clear"></div>
-                </ul>
-                <ul class="menu-small">
-                    @if(auth()->guard('client')->user())
-                        <li><a href="{{ route('user.account') }}"><span>Minha Conta</span></a></li><li><a href="{{ route('user.logout') }}"><span>Sair</span></a></li>
-                    @else
-                        <li><a href="{{ route('user.login') }}#register" class="mr-2" id="register-account"><span>Criar Conta</span></a></li><li><a href="{{ route('user.login') }}"><span>Entrar</span></a></li>
-                    @endif
-                </ul>
-            </div>
+        <nav class="header-top">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado" aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="cssmenu collapse navbar-collapse" id="conteudoNavbarSuportado">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="{{ Route::currentRouteName() == "user.home" ? 'active' : ''}}">
+                            <a href="{{ route('user.home') }}"><span>Início</span></a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "user.account.animals.new" ? 'active' : ''}}">
+                            <a href="{{ route('user.account.animals.new') }}"><span>Anunciar</span></a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "user.animals.list" ? 'active' : ''}}">
+                            <a href="{{ route('user.animals.list') }}"><span>Localizar</span></a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}">
+                            <a href="{{ route('user.about') }}"><span>Sobre</span></a>
+                        </li>
+                        <div class="clear"></div>
+                    </ul>
+                    <ul class="navbar-nav mr-auto menu-small">
+                        @if(auth()->guard('client')->user())
+                            <li><a href="{{ route('user.account') }}"><span>Minha Conta</span></a></li><li><a href="{{ route('user.logout') }}"><span>Sair</span></a></li>
+                        @else
+                            <li><a href="{{ route('user.login') }}#register" class="mr-2" id="register-account"><span>Criar Conta</span></a></li><li><a href="{{ route('user.login') }}"><span>Entrar</span></a></li>
+                        @endif
+                    </ul>
+                </div>
+            </nav>
             <div class="logo">
                 <h1><a href="#">Smarty</a></h1>
             </div>

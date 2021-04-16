@@ -159,6 +159,12 @@
         #dataAnimal.nav-tabs .nav-link:not(.active) {
             color: #d74a3c;
         }
+        #description ol,
+        #description ul {
+            list-style: revert;
+            margin: revert;
+            padding: revert;
+        }
     </style>
 
 @endsection
@@ -216,7 +222,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Local de desaparecimento</label>
-                        <p>{{ $animal['place'] }}</p>
+                        <p>{{ $animal['place'] ?? 'Não informado' }}</p>
                     </div>
                 </div>
             </div>
@@ -234,7 +240,7 @@
 
                 <div class="tab-content">
                     <div class="tab-pane active" id="description" role="tabpanel" aria-labelledby="description-tab">
-                        {!! $animal['observation'] !!}
+                        {!! $animal['observation'] ?? 'Não informado' !!}
                     </div>
                     <div class="tab-pane" id="specification" role="tabpanel" aria-labelledby="specification-tab">
                         <table class="table col-md-12">
@@ -275,7 +281,7 @@
                 <div class="row col-md-12">
                     <div class="col-md-4">
                         <label>Data do desaparecimento</label>
-                        <p>{{ $animal['disappearance_date'] ? date('d/m/Y H:i', strtotime($animal['disappearance_date'])) : 'Não informado' }}</p>
+                        <p>{{ $animal['disappearance_date'] ? date('d/m/Y', strtotime($animal['disappearance_date'])) : 'Não informado' }}</p>
                     </div>
                     <div class="col-md-4">
                         <label>Telefone para Contato</label>
@@ -283,7 +289,7 @@
                     </div>
                     <div class="col-md-4">
                         <label>E-mail para contato</label>
-                        <p>{{ $animal['email_contact'] }}</p>
+                        <p>{{ $animal['email_contact'] ?? 'Não informado' }}</p>
                     </div>
                 </div>
             </div>
@@ -308,7 +314,7 @@
             @else
                 <div class="row">
                     <div class="col-md-12 text-center mt-2 mb-3">
-                        <h5 class="h5">Façã o <a href="{{ route('user.login') }}">login</a> para enviar uma mensagem.</h5>
+                        <h5 class="h5">Faça o <a href="{{ route('user.login') }}">login</a> para enviar uma mensagem.</h5>
                     </div>
                     <div class="col-md-12">
                         <a href="{{ route('user.animals.list') }}" class="btn btn-primary">Voltar</a>
