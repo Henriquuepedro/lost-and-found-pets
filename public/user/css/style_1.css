@@ -3458,7 +3458,8 @@ p.text1{
     font-size: 10px;
 }
 .cssmenu .menu-small li a {
-    padding: 2px 20px
+    padding: 2px 20px;
+    font-size: 1rem;
 }
 .cssmenu .menu-small li a:hover {
     color: #9c9c9c;
@@ -3503,6 +3504,13 @@ textarea:focus, input:focus, select:focus {
 }
 b {
     font-weight: bold;
+}
+.navbar-light .navbar-toggler i {
+    color: #fff;
+    font-size: 30px;
+}
+.navbar-light .navbar-toggler {
+    border: 0;
 }
 
 /*--responsive--*/
@@ -3725,7 +3733,23 @@ b {
 }
 @media (max-width:768px){
     .cssmenu .menu-small {
-        top: 30px;
+        position: revert;
+        top: revert;
+        right: revert;
+    }
+    .cssmenu .menu-small li {
+        font-size: revert;
+    }
+    .cssmenu .menu-small li a {
+        padding: 0 15px;
+    }
+    .cssmenu .menu-small li a:hover {
+        color: #000;
+        background: #fff;
+    }
+
+    .cssmenu .menu-small {
+        top: revert;
     }
 	.wrap{
 		width:90%;

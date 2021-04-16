@@ -50,7 +50,7 @@ class AnimalController extends Controller
         // Insere dados do animal
         $insertAnimal  = $this->animal->insert([
             'user_created'       => $userId,
-            'name'               => $request->name ? filter_var($request->name, FILTER_SANITIZE_STRING) : NULL,
+            'name'               => filter_var($request->name, FILTER_SANITIZE_STRING),
             'species'            => $request->species ? filter_var($request->species, FILTER_SANITIZE_STRING) : NULL,
             'sex'                => $request->sex ? filter_var($request->sex, FILTER_SANITIZE_STRING) : NULL,
             'age'                => $request->age ? FILTER_VAR($request->age, FILTER_SANITIZE_STRING) : NULL,
@@ -60,10 +60,10 @@ class AnimalController extends Controller
             'place'              => $request->place ? filter_var($request->place, FILTER_SANITIZE_STRING) : NULL,
             'city'               => $request->city ? (int)$request->city : NULL,
             'neigh'              => $request->neigh ? (int)$request->neigh : NULL,
-            'disappearance_date' => $request->disappearance_date ? \DateTime::createFromFormat('d/m/Y H:i', trim($request->disappearance_date))->format('Y-m-d H:i:s') : NULL,
+            'disappearance_date' => $request->disappearance_date ? \DateTime::createFromFormat('d/m/Y', trim($request->disappearance_date))->format('Y-m-d') : NULL,
             'phone_contact'      => $request->phone_contact ? filter_var(preg_replace('~[.-]~', '', $request->phone_contact), FILTER_SANITIZE_NUMBER_INT) : NULL,
             'email_contact'      => $request->email_contact ? (filter_var($request->email_contact, FILTER_VALIDATE_EMAIL) ? $request->email_contact : NULL) : NULL,
-            'observation'        => filter_var($request->observation)
+            'observation'        => $request->observation ? filter_var($request->observation) : NULL
         ]);
         $codAnimal   = $insertAnimal->id; // Recupera código inserido no banco
         $insertImage = $this->animalImage->insert($request, $codAnimal); // Insere imagens do animal
