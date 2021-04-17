@@ -71,4 +71,9 @@ class Conversation extends Model
             ->orderBy('conversations.updated_at', 'DESC')
             ->get();
     }
+
+    public function removeByAnimalId($animal_id)
+    {
+        return $this->where('animal_id', $animal_id)->delete();
+    }
 }

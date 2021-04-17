@@ -6,10 +6,81 @@
     <script>
 
         $('.acc-animal-header').click(function () {
-
-            const element = $(this).closest('.acc-animal-card');
             $(this).parent().toggleClass('acc-delivery-cont-close acc-delivery-cont-open');
-        })
+        });
+
+        $('.remove-animal').on('click', function() {
+            const animal_id = $(this).attr('animal-id');
+            const animal_name = $(this).attr('animal-name');
+            const elCard = $(this).closest('.acc-order-card');
+
+            Swal.fire({
+                title: 'Exclusão de Anúncio',
+                html: "Você está prestes a excluir definitivamente o anúncio do animal <br><b>"+animal_name+"</b><br>Deseja continuar?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#bbb',
+                confirmButtonText: 'Sim, excluir',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: 'POST',
+                        url: "{{ route('user.account.animals.delete') }}",
+                        data: { animal_id },
+                        dataType: 'json',
+                        success: response => {
+                            console.log(response);
+                            if (response.success) {
+                                elCard.slideUp(500);
+                                setTimeout(() => {
+                                    elCard.remove();
+                                }, 750);
+                            }
+
+                            Toast.fire({
+                                icon: response.success ? 'success' : 'error',
+                                title: response.message
+                            });
+                        }, error: e => {
+                            if (e.status !== 403 && e.status !== 422)
+                                console.log(e);
+                        },
+                        complete: function(xhr) {
+                            if (xhr.status === 403) {
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Você não tem permissão para fazer essa operação!'
+                                });
+                                $(`button[equipment-id="${equipment_id}"]`).trigger('blur');
+                            }
+                            if (xhr.status === 422) {
+
+                                let arrErrors = [];
+
+                                $.each(xhr.responseJSON.errors, function( index, value ) {
+                                    arrErrors.push(value);
+                                });
+
+                                if (!arrErrors.length && xhr.responseJSON.message !== undefined)
+                                    arrErrors.push('Você não tem permissão para fazer essa operação!');
+
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Atenção',
+                                    html: '<ol><li>'+arrErrors.join('</li><li>')+'</li></ol>'
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
 
     </script>
 @endsection
@@ -70,9 +141,13 @@
                                                                     </a>
                                                                     <div class="acc-order-product-truncate">
                                                                     <span class="acc-order-product-info" alt="" title="">
-                                                                        <a class="acc-order-product-link" target="_blank" rel="noopener noreferrer" href="">Data do desaparecimento: {{ $animal['disappearance_date'] ? date('d/m/Y H:i', strtotime($animal['disappearance_date'])) : '' }}</a>
+                                                                        <a class="acc-order-product-link" target="_blank" rel="noopener noreferrer" href="">Data do desaparecimento: {{ $animal['disappearance_date'] ? date('d/m/Y', strtotime($animal['disappearance_date'])) : '' }}</a>
                                                                     </span>
-                                                                        <p class="acc-order-product-info"><strong>Espécie: {{$animal['species']}}<br>Cor: {{$animal['color']}}<br> Tamanho: {{$animal['size']}}</strong></p>
+                                                                        <p class="acc-order-product-info">
+                                                                            <strong>Espécie:</strong> {{$animal['species']}}<br>
+                                                                            <strong>Cor:</strong> {{$animal['color']}}<br>
+                                                                            <strong>Tamanho:</strong> {{$animal['size']}}
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </li>
@@ -81,6 +156,9 @@
                                                             <a class="btn btn-primary col-md-4 py-1" href="{{ route('user.account.animal', array('id' => $animal['id'])) }}">
                                                                 <i class="fas fa-file-alt"></i> Ver Detalhes
                                                             </a>
+                                                            <button class="btn btn-danger col-md-4 py-1 remove-animal" animal-name="{{ $animal['name'] }}" animal-id="{{ $animal['id'] }}">
+                                                                <i class="fas fa-trash"></i> Excluir Anúncio
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>

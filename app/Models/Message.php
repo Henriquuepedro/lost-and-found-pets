@@ -87,4 +87,9 @@ class Message extends Model
             ])
             ->get();
     }
+
+    public function removeByAnimalId($animal_id)
+    {
+        return $this->where('animal_id', $animal_id)->delete();
+    }
 }

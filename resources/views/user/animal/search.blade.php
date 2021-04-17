@@ -80,6 +80,10 @@
             border-bottom-left-radius: 5px;
             border-top-left-radius: 5px;
         }
+        .filters-search div.col-md-3:nth-child(3) .select2-container{
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
+        }
         .filters-search h2 {
             font-size: 25px;
             font-weight: bold;
@@ -138,7 +142,7 @@
                 <form action="{{ route('user.animals.list') }}" method="GET" class="col-md-12 d-flex justify-content-center flex-wrap">
                     <div class="col-md-3 no-padding">
                         <select class="col-md-12" id="city" name="cidade">
-                            <option value="">Selecione a cidade</option>
+                            <option value="0">Selecione a cidade</option>
                             @foreach($cities as $city)
                                 <option value="{{ $city['id'] }}" {{ $filter['city'] == $city['id'] ? 'selected' : '' }}>{{ $city['name'] }}</option>
                             @endforeach
@@ -146,12 +150,18 @@
                     </div>
                     <div class="col-md-3 no-padding">
                         <select class="col-md-12" id="neigh" name="bairro" disabled>
-                            <option>Selecione o bairro</option>
+                            <option value="0">Selecione o bairro</option>
                         </select>
                     </div>
-                    <div class="col-md-2 no-padding">
-                        <input type="date" class="col-md-12" name="data" value="{{ $filter['date'] ?? '' }}">
+                    <div class="col-md-3 no-padding">
+                        <select class="col-md-12" id="ordem" name="ordem">
+                            <option value="date_desc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'DESC' ? 'selected' : '' }}>Mais Recente</option>
+                            <option value="date_asc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'ASC' ? 'selected' : '' }}>Mais Antigo</option>
+                        </select>
                     </div>
+{{--                    <div class="col-md-2 no-padding">--}}
+{{--                        <input type="date" class="col-md-12" name="data" value="{{ $filter['date'] ?? '' }}">--}}
+{{--                    </div>--}}
                     <div class="col-md-2 pl-md-3">
                         <button type="submit" class="button-search col-md-12">Aplicar Filtro</button>
                     </div>
@@ -169,7 +179,8 @@
                                 <div class="text list_2_of_1">
                                     <h3><span>{{ date('d/m/Y H:i', strtotime($animal['created_at'])) }}</span> {{ $animal['name'] }}</h3>
                                     <p>
-                                        <b>Espécie:</b> {{ $animal['species'] }}
+                                        <b>Bairro:</b> {{ $animal['neigh_name'] }}
+                                        <b class="pl-md-4">Espécie:</b> {{ $animal['species'] }}
                                         <b class="pl-md-4">Cor:</b> {{ $animal['color'] }}
                                         <b class="pl-md-4">Porte:</b> {{ $animal['size'] }}
                                     </p>
