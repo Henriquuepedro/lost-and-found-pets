@@ -10,3 +10,9 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/public/user/img/about/
+/public/user/img/admin/
+/public/user/img/animals/
+/public/user/img/banner/
+/public/user/img/testimony/
+/public/user/img/title/

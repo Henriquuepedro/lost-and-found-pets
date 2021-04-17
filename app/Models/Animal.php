@@ -23,6 +23,8 @@ class Animal extends Model
         'color',
         'race',
         'place',
+        'city',
+        'neigh',
         'disappearance_date',
         'phone_contact',
         'email_contact',
@@ -62,26 +64,39 @@ class Animal extends Model
         return $this->create($data);
     }
 
-    public function getAllAnimals($city, $neigh, $date)
+    public function getAllAnimals($city, $neigh, $date, $order)
     {
-        $query = $this->select('name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation', 'place')
+        $query = $this->select('animals.name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation', 'place', 'neighborhoods.name as neigh_name')
             ->leftJoin('animal_images',function ($join) {
                 $join->on(function ($queryone){
                     $queryone->on('animal_images.animal_id', 'animals.id');
                     $queryone->where('animal_images.primary', true);
                 });
-            });
+            })
+            ->leftJoin('neighborhoods', 'neighborhoods.id', '=', 'animals.neigh');
 
         if ($city) $query->where('animals.city', $city);
         if ($neigh) $query->where('animals.neigh', $neigh);
         if ($date) $query->where('animals.updated_at', '>', $date);
 
-        return $query->orderBy('animals.id', 'DESC')
-            ->get();
+        return $query->orderBy($order[0], $order[1])->get();
     }
 
-    public function getAnimal($id)
+    public function getAnimal($id, $user_id = null)
     {
-        return $this->find($id);
+        if (!$user_id)
+            return $this->find($id);
+
+        return $this->where(['id' => $id, 'user_created' => $user_id])->first();
+    }
+
+    public function edit($data, $id)
+    {
+        return $this->where('id', $id)->update($data);
+    }
+
+    public function remove($animal_id)
+    {
+        return $this->where('id', $animal_id)->delete();
     }
 }

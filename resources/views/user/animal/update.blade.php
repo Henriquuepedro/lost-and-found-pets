@@ -49,7 +49,7 @@
             });
 
             // Renderiza o plugin de imagens
-            $('.input-images').imageUploader();
+            // $('.input-images').imageUploader();
 
             $('[name="images[]"]').on('change', function(){
                 if ($('.image-uploader .uploaded .uploaded-image').length == 0)
@@ -64,6 +64,35 @@
                 else
                     $('.upload-text').css("border", "unset");
             });
+
+            // Carregando imagens já inseridas
+            let preloaded = [];
+            let codImage  = 0;
+            let imagePrimary = 0;
+            let options;
+            if($('.images-pre').length === 1) {
+                $('.images-pre input').each(function () {
+                    codImage = $(this).attr('cod-img');
+                    if($(this).attr('img-primary') == 1) imagePrimary = codImage;
+                    preloaded.push({id: `old_${codImage}`, src: $(this).val()});
+                });
+                options = {
+                    preloaded,
+                    imagesInputName: 'images',
+                    preloadedInputName: 'old_images'
+                };
+            }
+            // Renderiza o plugin de imagens
+            $('.input-images').imageUploader(options);
+
+            // Adiciona class na imagem primária
+            $(`.uploaded-image input[value="old_${imagePrimary}"]`).parents('.uploaded-image').addClass('primary-image');
+
+            setTimeout(() => {
+                if ($('[name="neight_id"]').val() != 0 && $('[name="neight_id"]').val() != null) {
+                    getNeighs($('#city').val(), $('[name="neight_id"]').val());
+                }
+            }, 500);
         });
 
         // validate the form when it is submitted
@@ -109,6 +138,18 @@
 
             if (city === 0) return false;
 
+            getNeighs(city)
+        });
+
+        const createListError = (field, message, element) => {
+            if ($(document).scrollTop() != 0)
+                $('html, body').animate({scrollTop:0}, 'slow');
+
+            $(element).css("border", "1px solid #bf1616");
+            $('.error-form').show().find('ol').show().append(`<li><label id="weight-error" class="error" for="${field}" style="">${message}</label></li>`)
+        }
+
+        const getNeighs = (city, neigh = null) => {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -120,8 +161,12 @@
                 success: response => {
 
                     let options = '';
+                    let selected = '';
                     $(response).each(function (key, value) {
-                         options += `<option value="${value.id}">${value.name}</option>`;
+
+                        selected = neigh == value.id ? 'selected' : '';
+
+                        options += `<option value="${value.id}" ${selected}>${value.name}</option>`;
                     });
 
                     $('#neigh').append(options).attr('disabled', false);
@@ -130,14 +175,6 @@
                     console.log("Acorreu um problema, tente mais tarde!");
                 }
             });
-        });
-
-        const createListError = (field, message, element) => {
-            if ($(document).scrollTop() != 0)
-                $('html, body').animate({scrollTop:0}, 'slow');
-
-            $(element).css("border", "1px solid #bf1616");
-            $('.error-form').show().find('ol').show().append(`<li><label id="weight-error" class="error" for="${field}" style="">${message}</label></li>`)
         }
     </script>
 @endsection
@@ -242,26 +279,26 @@
                     @endforeach
                 </ol>
             </div>
-            <form action="{{ route('user.account.animals.insert') }}" method="POST" enctype="multipart/form-data" id="formInsertAnimal">
+            <form action="{{ route('user.account.animals.update') }}" method="POST" enctype="multipart/form-data" id="formInsertAnimal">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-6">
                                     <label for="name">Nome do Animal</label>
-                                    <input type="text" class="form-control" maxlength="256" name="name" id="name" title="É preciso informar o nome" required>
+                                    <input type="text" class="form-control" maxlength="256" name="name" id="name" value="{{ old() ? old('name') : $animal['name'] }}" title="É preciso informar o nome" required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="species">Espécie <small>(<b>Exemplo</b>: Cachorro, Gato, Etc...)</small></label>
-                                    <input type="text" class="form-control" maxlength="256" name="species" id="species">
+                                    <input type="text" class="form-control" maxlength="256" name="species" id="species" value="{{ old() ? old('species') : $animal['species'] }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>Sexo</label>
                                     <br/>
                                     <div class="d-flex justify-content-between flex-wrap">
-                                        <label><input type="radio" value="M" name="sex"> Macho</label>
-                                        <label><input type="radio" value="F" name="sex"> Fêmea</label>
-                                        <label><input type="radio" value="X" name="sex"> Desconhecido</label>
+                                        <label><input type="radio" value="M" name="sex" {{ old() ? (old('sex') == 'M' ? 'checked' : '') : ($animal['sex'] == 'M' ? 'checked' : '') }}> Macho</label>
+                                        <label><input type="radio" value="F" name="sex" {{ old() ? (old('sex') == 'F' ? 'checked' : '') : ($animal['sex'] == 'F' ? 'checked' : '') }}> Fêmea</label>
+                                        <label><input type="radio" value="X" name="sex" {{ old() ? (old('sex') == 'X' ? 'checked' : '') : ($animal['sex'] == 'X' ? 'checked' : '') }}> Desconhecido</label>
                                     </div>
                                 </div>
                             </div>
@@ -270,19 +307,19 @@
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-3">
                                     <label for="age">Idade</label>
-                                    <input type="text" class="form-control" maxlength="256" name="age" id="age">
+                                    <input type="text" class="form-control" maxlength="256" name="age" id="age" value="{{ old() ? old('age') : $animal['age'] }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="size">Porte</label>
-                                    <input type="text" class="form-control" maxlength="7" name="size" id="size">
+                                    <input type="text" class="form-control" maxlength="7" name="size" id="size" value="{{ old() ? old('size') : $animal['size'] }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="color">Cor</label>
-                                    <input type="text" class="form-control" maxlength="256" name="color" id="color">
+                                    <input type="text" class="form-control" maxlength="256" name="color" id="color" value="{{ old() ? old('color') : $animal['color'] }}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="race">Raça</label>
-                                    <input type="text" class="form-control" maxlength="256" name="race" id="race">
+                                    <input type="text" class="form-control" maxlength="256" name="race" id="race" value="{{ old() ? old('race') : $animal['race'] }}">
                                 </div>
                             </div>
                         </div>
@@ -291,7 +328,7 @@
                                 <div class="form-group flatpickr col-md-3">
                                     <label class="label-date-btns">Data do desaparecimento</label>
                                     <div class="d-flex">
-                                    <input type="tel" name="disappearance_date" id="disappearance_date" class="form-control col-md-9" value="{{ date('d/m/Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM" im-insert="false" data-input>
+                                    <input type="tel" name="disappearance_date" id="disappearance_date" class="form-control col-md-9"  value="{{ old() ? old('disappearance_date') : ($animal['disappearance_date'] == null ? date('d/m/Y') : date('d/m/Y', strtotime($animal['disappearance_date']))) }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM" im-insert="false" data-input>
                                     <div class="input-button-calendar col-md-3 no-padding d-flex">
                                         <a class="input-button pull-left btn-orange" title="toggle" data-toggle>
                                             <i class="fa fa-calendar text-white"></i>
@@ -304,11 +341,11 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="phone_contact">Telefone para contato</label>
-                                    <input type="tel" class="form-control" maxlength="15" name="phone_contact" id="phone_contact">
+                                    <input type="tel" class="form-control" maxlength="15" name="phone_contact" id="phone_contact" value="{{ old() ? old('phone_contact') : $animal['phone_contact'] }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="email_contact">E-mail para contato</label>
-                                    <input type="email" class="form-control" maxlength="256" name="email_contact" id="email_contact">
+                                    <input type="email" class="form-control" maxlength="256" name="email_contact" id="email_contact" value="{{ old() ? old('email_contact') : $animal['email_contact'] }}">
                                 </div>
                             </div>
                         </div>
@@ -319,7 +356,7 @@
                                     <select class="form-control" name="city" id="city" title="É preciso informar a cidade" required>
                                         <option value="">Selecione a cidade</option>
                                         @foreach($cities as $city)
-                                            <option value="{{ $city['id'] }}">{{ $city['name'] }}</option>
+                                            <option value="{{ $city['id'] }}" {{ old() ? (old('city') == $city['id'] ? 'selected' : '') : ($animal['city'] == $city['id'] ? 'selected' : '') }}>{{ $city['name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -331,7 +368,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="place">Local de desaparecimento</label>
-                                    <textarea class="form-control" name="place" id="place"></textarea>
+                                    <textarea class="form-control" name="place" id="place">{{ old() ? old('place') : $animal['place'] }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +387,7 @@
                             <div class="col-md-12 d-flex flex-wrap">
                                 <div class="form-group col-md-12">
                                     <label for="observation">Observação</label>
-                                    <textarea class="form-control" name="observation" id="observation"></textarea>
+                                    <textarea class="form-control" name="observation" id="observation">{{ old() ? old('observation') : $animal['observation'] }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -360,7 +397,15 @@
                         <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Cadastrar</button>
                     </div>
                 </div>
-                <input type="hidden" name="primaryImage" value=""/>
+
+                <div class="images-pre">
+                    @foreach($imagesAnimal as $images)
+                        <input type="hidden" value="{{ asset('user/img/animals/' . $animal['id'] . '/' . $images['url']) }}" img-primary="{{ $images['primary'] }}" cod-img="{{ $images['cod'] }}"/>
+                    @endforeach
+                </div>
+                <input type="hidden" name="animal_id" value="{{$animal['id']}}"/>
+                <input type="hidden" name="primaryImage" value="old_{{$animal['primaryKey']}}1"/>
+                <input type="hidden" name="neight_id" value="{{$animal['neigh']}}"/>
                 {!! csrf_field() !!}
             </form>
         </div>
