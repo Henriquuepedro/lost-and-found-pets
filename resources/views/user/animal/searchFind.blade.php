@@ -214,11 +214,11 @@
                 <div class="row col-md-12">
                     <div class="col-md-3">
                         <label>Cidade</label>
-                        <p>{{ $animal['neigh_name']->name ?? 'Não informado' }}</p>
+                        <p>{{ $animal['city_name']->name ?? 'Não informado' }}</p>
                     </div>
                     <div class="col-md-3">
                         <label>Bairro</label>
-                        <p>{{ $animal['city_name']->name ?? 'Não informado' }}</p>
+                        <p>{{ $animal['neigh_name']->name ?? 'Não informado' }}</p>
                     </div>
                     <div class="col-md-6">
                         <label>Local de desaparecimento</label>

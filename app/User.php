@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'tel'
+        'name', 'email', 'password', 'tel', 'id_app', 'exp_app', 'type_app'
     ];
 
     /**
@@ -70,5 +70,15 @@ class User extends Authenticatable
     public function getLastLogins($limit = 5)
     {
         return $this->whereNotNull('last_login')->orderByDesc('last_login')->limit($limit)->get();
+    }
+
+    public function getUserByEmail($email)
+    {
+        return $this->where('email', $email)->first();
+    }
+
+    public function getUserByApp($email, $id_app)
+    {
+        return $this->where(['email' => $email, 'id_app' => $id_app])->first();
     }
 }

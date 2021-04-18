@@ -7,20 +7,16 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Mail\SendMailController;
-use App\Cart;
 
 class RegisterController extends Controller
 {
     private $user;
     private $mail;
-    private $cart;
 
-    public function __construct(User $user, SendMailController $mail, Cart $cart)
+    public function __construct(User $user, SendMailController $mail)
     {
-
         $this->user = $user;
         $this->mail = $mail;
-        $this->cart = $cart;
     }
 
     public function register()
@@ -30,9 +26,6 @@ class RegisterController extends Controller
 
     public function registerPost(Request $request)
     {
-        if (!isset($_SESSION))
-            session_start();
-
         $validator = validator(
             $request->all(),
             [

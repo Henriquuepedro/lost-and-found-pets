@@ -29,9 +29,18 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/', [HomeUser::class, 'index'])->name('user.home');
 
+
+Route::get('/politica-de-privacidade', function () { return view('user.policy.policy'); });
+Route::get('/termos-de-servico', function () { return view('user.policy.terms'); });
+
+// Login externo (Com Apps)
+Route::get('/entrar/facebook', [LoginController::class, 'loginFacebook'])->name('user.login.facebook');
+Route::get('/entrar/google', [LoginController::class, 'loginGoogle'])->name('user.login.google');
+
 Route::get('/entrar', [LoginController::class, 'login'])->name('user.login');
 Route::post('/entrar', [LoginController::class, 'loginPost'])->name('user.login.post');
 Route::get('/sair', [LoginController::class, 'logout'])->name('user.logout');
+Route::post('/excluir-dados-usuario', [LoginController::class, 'removeDataUser'])->name('user.remove');
 
 Route::get('/esqueceu-senha', [ForgotPasswordController::class,'forgotPassword'])->name('user.forgotPassword');
 Route::post('/esqueceu-senha', [ForgotPasswordController::class,'forgotPasswordPost'])->name('user.forgotPassword.post');

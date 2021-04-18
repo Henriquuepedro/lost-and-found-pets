@@ -4,27 +4,27 @@
 
 @section('js')
     <script>
-        const signUpButton1 = document.getElementById('signUp');
-        const signUpButton2 = document.getElementById('register-account');
-        const signInButton = document.getElementById('signIn');
-        const container = document.getElementById('container');
+        const signUpButton1 = $('.signUp')[0];
+        const signUpButton2 = $('#register-account')[0];
+        const signInButton = $('.signIn')[0];
+        const container = $('#container')[0];
 
-        signUpButton1.addEventListener('click', () => {
-            container.classList.add("right-panel-active");
+        $('.signUp').on('click', () => {
+            $('#container').addClass("right-panel-active");
         });
 
-        signUpButton2.addEventListener('click', () => {
-            container.classList.add("right-panel-active");
+        $('#register-account').on('click', () => {
+            $('#container').addClass("right-panel-active");
         });
 
-        signInButton.addEventListener('click', () => {
-            container.classList.remove("right-panel-active");
+        $('.signIn').on('click', () => {
+            $('#container').removeClass("right-panel-active");
         });
 
         $(function (){
             if (window.location.href.split('#').length === 2) {
                 if (window.location.href.split('#').pop() === 'register') {
-                    $('#signUp').trigger('click');
+                    $('.signUp').trigger('click');
                 }
             }
         });
@@ -179,9 +179,9 @@
         }
 
         .login .overlay {
-            background: #FF416C;
-            background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            background: #C0392B;
+            background: -webkit-linear-gradient(to right, #212529, #C0392B);
+            background: linear-gradient(to right, #212529, #C0392B);
             background-repeat: no-repeat;
             background-size: cover;
             background-position: 0 0;
@@ -284,6 +284,69 @@
             flex-wrap: wrap;
             padding-top: 20px;
         }
+        .signUp-xs,
+        .signIn-xs,
+        .or-xs{
+            display: none;
+        }
+
+
+        @media (max-width: 992px) {
+            .login .sign-up-container {
+                left: 0;
+                width: 100%;
+                opacity: 0;
+                z-index: 1;
+            }
+            .login .sign-in-container {
+                width: 100%;
+                z-index: 2;
+            }
+
+            .login .container.right-panel-active .sign-in-container {
+                transform: translateX(0%);
+            }
+            .login .container .sign-up-container {
+                opacity: 1;
+                animation: show 0.6s;
+            }
+
+            .login .overlay-container {
+                position: revert;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 100;
+            }
+            .signUp-xs,
+            .signIn-xs{
+                display: block;
+            }
+
+
+            .login .container.right-panel-active .sign-up-container {
+                transform: translateX(0%);
+            }
+
+            .login .container.right-panel-active .overlay-container {
+                transform: translateX(0%);
+            }
+
+
+            .login .container.right-panel-active .overlay {
+                transform: translateX(0%);
+            }
+
+            .login .container {
+                min-height: 550px;
+            }
+            .overlay-container {
+                display: none;
+            }
+            .or-xs {
+                display: block;
+            }
+        }
     </style>
 @endsection
 
@@ -312,17 +375,20 @@
             <div class="container" id="container">
                 <div class="form-container sign-up-container">
                     <form action="{{ route('user.register.post') }}" method="post">
-                        <h1>Create Account</h1>
+                        <h1>Criar Conta</h1>
                         <div class="social-container">
-                            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                            @foreach($authsExternal as $auth)
+                                <a href="{{ $auth['url'] }}" class="social"><i class="{{ $auth['icon'] }}"></i></a>
+                            @endforeach
                         </div>
-                        <span>or use your email for registration</span>
+                        <span>ou use seu e-mail para se registrar</span>
                         <input type="text" name="name" placeholder="Nome Completo" required/>
                         <input type="email" name="email" placeholder="Email" required/>
                         <input type="password" name="password" placeholder="Senha" required/>
                         <input type="password" name="password_confirmation" placeholder="Confirme sua senha" required/>
                         <button>Cadastrar</button>
+                        <p class="mb-3 mt-3 or-xs">ou</p>
+                        <button type="button" class="signIn-xs signIn">Entrar</button>
                         {!! csrf_field() !!}
                     </form>
                 </div>
@@ -330,14 +396,17 @@
                     <form action="{{ route('user.login.post') }}" method="post">
                         <h1>Entrar</h1>
                         <div class="social-container">
-                            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                            @foreach($authsExternal as $auth)
+                                <a href="{{ $auth['url'] }}" class="social"><i class="{{ $auth['icon'] }}"></i></a>
+                            @endforeach
                         </div>
                         <span>ou use sua conta</span>
                         <input type="email" name="email" placeholder="E-mail" required/>
                         <input type="password" name="password" placeholder="Senha" required/>
                         <a href="{{ route('user.forgotPassword') }}">Esqueceu sua senha?</a>
                         <button>Entrar</button>
+                        <p class="mb-3 mt-3 or-xs">ou</p>
+                        <button type="button" class="signUp-xs signUp">Cadastra-se</button>
                         {!! csrf_field() !!}
                     </form>
                 </div>
@@ -346,12 +415,12 @@
                         <div class="overlay-panel overlay-left">
                             <h1>Bem vindo de volta!</h1>
                             <p>Para se manter conectado conosco, faça o login com suas informações pessoais</p>
-                            <button class="ghost" id="signIn">Entrar</button>
+                            <button class="ghost signIn">Entrar</button>
                         </div>
                         <div class="overlay-panel overlay-right">
                             <h1>Olá, amigo!</h1>
                             <p>Insira seus dados pessoais e comece a jornada conosco!</p>
-                            <button class="ghost" id="signUp">Cadastrar</button>
+                            <button class="ghost signUp">Cadastrar</button>
                         </div>
                     </div>
                 </div>
