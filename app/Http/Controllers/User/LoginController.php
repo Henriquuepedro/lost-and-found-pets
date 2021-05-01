@@ -22,15 +22,15 @@ class LoginController extends Controller
         $this->mail = $mail;
 
         define("FACEBOOK", [
-            'APP_ID'        => '751990502165387',
-            'APP_SECRET'    => '32021cb49ad6ef51fcce49636c83058d',
+            'APP_ID'        => '644480689749863',
+            'APP_SECRET'    => 'ca911fb87ac490b9850f83cc84a6356f',
             'APP_REDIRECT'  => 'https://animais.pedrohenrique.net/entrar/facebook',
             'APP_VERSION'   => 'v4.0'
         ]);
 
         define("GOOGLE", [
-            'CLIENT_ID'     => '296954161978-kk40mmeh3ohts52rmh4bis70qrekoidm.apps.googleusercontent.com',
-            'SECRET_KEY'    => 'QDf5R9CAlooRcoABa-zu1tl5',
+            'CLIENT_ID'     => '328904429875-5o9rpfsvd7jtvjpr1k4rp7uekcgkasm7.apps.googleusercontent.com',
+            'SECRET_KEY'    => '8S52A0cq0CeIZitSTpZqBxYf',
             'APP_REDIRECT'  => 'https://animais.pedrohenrique.net/entrar/google',
 //            'APP_HOST'      => 'https://animais.pedrohenrique.net'
         ]);

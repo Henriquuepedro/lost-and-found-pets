@@ -194,7 +194,7 @@
             const scrollChat = $('.chat-history ul').height();
 
             if (scrollChat <= scrollUser) {
-                $('.alert-new-message').css('display', 'none');
+                $('.alert-new-message').hide();
                 return true;
             } else if(showBtn) {
                 $('.alert-new-message').css('display', 'flex');
@@ -274,7 +274,7 @@
         });
 
         $('#sendMessage').click(function (){
-            const content = $(this).closest('.chat-message').find('textarea').val();
+            const content = $(this).closest('.chat-message').find('textarea').val().trim();
             const userTo = userActive;
             const animalTo = animalActive;
 
@@ -319,7 +319,7 @@
 
         $('.alert-new-message button').click(function (){
             $('.chat-history').animate({scrollTop: $(window).scrollTop() + $(window).height()});
-            $('.alert-new-message').css('display', 'hide');
+            $('.alert-new-message').hide();
         });
 
     </script>

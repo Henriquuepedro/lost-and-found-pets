@@ -145,7 +145,6 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('vendor/jquery-image-uploader/src/image-uploader.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
     <style>
         .image-uploader::after {
             content: 'CLIQUE PARA ADICIONAR IMAGENS';
@@ -221,12 +220,6 @@
             border-bottom-right-radius: 0;
             border-top-right-radius: 0;
         }
-        .btn-orange {
-            background-color: #C0392B;
-        }
-        .btn-orange:hover {
-            background-color: #9a2e23;
-        }
     </style>
 @endsection
 
@@ -293,10 +286,10 @@
                                     <div class="d-flex">
                                     <input type="tel" name="disappearance_date" id="disappearance_date" class="form-control col-md-9" value="{{ date('d/m/Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM" im-insert="false" data-input>
                                     <div class="input-button-calendar col-md-3 no-padding d-flex">
-                                        <a class="input-button pull-left btn-orange" title="toggle" data-toggle>
+                                        <a class="input-button pull-left btn-secondary" title="toggle" data-toggle>
                                             <i class="fa fa-calendar text-white"></i>
                                         </a>
-                                        <a class="input-button pull-right btn-orange" title="clear" data-clear>
+                                        <a class="input-button pull-right btn-secondary" title="clear" data-clear>
                                             <i class="fa fa-times text-white"></i>
                                         </a>
                                     </div>

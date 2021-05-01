@@ -21,8 +21,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <div class="wrap-box"> </div>
 <div class="header">
     <div class="wrap">
-        <nav class="header-top">
-            <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="header-top">
+            <nav class="navbar navbar-expand-lg navbar-light pt-0">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado" aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
                     <i class="fa fa-bars"></i>
                 </button>
@@ -41,7 +41,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <li class="{{ Route::currentRouteName() == "user.about" ? 'active' : ''}}">
                             <a href="{{ route('user.about') }}"><span>Sobre</span></a>
                         </li>
-                        <div class="clear"></div>
                     </ul>
                     <ul class="navbar-nav mr-auto menu-small">
                         @if(auth()->guard('client')->user())
@@ -53,7 +52,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
             </nav>
             <div class="logo">
-                <h1><a href="#">Smarty</a></h1>
+                <h1><a href="#">LocalizaPet</a></h1>
             </div>
             <div class="clear"></div>
         </div>

@@ -68,6 +68,7 @@
             color: #c0392b;
             height: 40px;
             border-radius: 0;
+            width: 100% !important;
         }
         .filters-search input{
             border: 1px solid #c0392b;
@@ -91,14 +92,14 @@
             text-transform: uppercase;
         }
         .filters-search .button-search {
-            background-color: #fff;
-            border: 1px solid #c0392b;
-            color: #c0392b;
+            background-color: #c0392b;
+            border: 1px solid #fff;
+            color: #fff;
             height: 40px;
             border-radius: 5px;
         }
         .filters-search .button-search:hover {
-            background-color: #c0392b;
+            background-color: #9c291d;
             border-color: #fff;
             color: #fff;
         }
@@ -128,72 +129,88 @@
                 margin-top:5px
             }
         }
+
+        @media (min-width:768px){
+            .main {
+                padding: 0
+            }
+            .wrap-search {
+                width: 100%;
+            }
+            .filters-search {
+                background-color: #2c2f3c;
+                border-top: 1px solid #fff;
+                border-bottom: 1px solid #fff;
+            }
+        }
     </style>
 @endsection
 
 @section('body')
 
     <div class="main">
-        <div class="wrap">
-            <div class="row filters-search">
-                <div class="col-md-12 d-flex justify-content-center flex-wrap">
-                    <h2 class="mb-3">Filtre a região e data do anúncio</h2>
+        <div class="wrap wrap-search">
+            <div class="row">
+                <div class="col-md-3 filters-search">
+                    <div class="col-md-12 text-center pt-4">
+                        <h2 class="mb-3">filtre a região</h2>
+                    </div>
+                    <form action="{{ route('user.animals.list') }}" method="GET">
+                        <div class="col-md-12 form-group">
+                            <select id="city" name="cidade">
+                                <option value="0">Selecione a cidade</option>
+                                @foreach($cities as $city)
+                                    <option value="{{ $city['id'] }}" {{ $filter['city'] == $city['id'] ? 'selected' : '' }}>{{ $city['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <select id="neigh" name="bairro" disabled>
+                                <option value="0">Selecione o bairro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <select id="ordem" name="ordem">
+                                <option value="date_desc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'DESC' ? 'selected' : '' }}>Mais Recente</option>
+                                <option value="date_asc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'ASC' ? 'selected' : '' }}>Mais Antigo</option>
+                            </select>
+                        </div>
+    {{--                    <div class="col-md-2 no-padding">--}}
+    {{--                        <input type="date" class="col-md-12" name="data" value="{{ $filter['date'] ?? '' }}">--}}
+    {{--                    </div>--}}
+                        <div class="col-md-12 form-group">
+                            <button type="submit" class="button-search col-md-12">Aplicar Filtro</button>
+                        </div>
+                    </form>
                 </div>
-                <form action="{{ route('user.animals.list') }}" method="GET" class="col-md-12 d-flex justify-content-center flex-wrap">
-                    <div class="col-md-3 no-padding">
-                        <select class="col-md-12" id="city" name="cidade">
-                            <option value="0">Selecione a cidade</option>
-                            @foreach($cities as $city)
-                                <option value="{{ $city['id'] }}" {{ $filter['city'] == $city['id'] ? 'selected' : '' }}>{{ $city['name'] }}</option>
+                <div class="col-md-9 pl-md-5 pr-md-5 list-searchs">
+                    <div class="col_1_of_2 col-md-12">
+                        @if (count($dataAnimals))
+                            @foreach($dataAnimals as $animal)
+                            <div class="mb-2 images_1_of_2 iten-search">
+                                <a href="{{ route('user.animals.searchFind', ['id' => $animal['id']]) }}" class="d-flex align-items-center">
+                                    <div class="listimg">
+                                        <img src="{{ asset($animal['path'] ? "user/img/animals/{$animal['id']}/thumbnail_{$animal['path']}" : 'user/img/animals/sem_foto.png') }}" width="100px" alt="{{ $animal['name'] }}">
+                                    </div>
+                                    <div class="text list_2_of_1">
+                                        <h3><span>{{ date('d/m/Y H:i', strtotime($animal['created_at'])) }}</span> {{ $animal['name'] }}</h3>
+                                        <p>
+                                            <b>Bairro:</b> {{ $animal['neigh_name'] }}
+                                            <b class="pl-md-4">Espécie:</b> {{ $animal['species'] }}
+                                            <b class="pl-md-4">Cor:</b> {{ $animal['color'] }}
+                                            <b class="pl-md-4">Porte:</b> {{ $animal['size'] }}
+                                        </p>
+                                        <h4 class="pt-1">{{ $animal['place'] }}</h4>
+                                    </div>
+                                </a>
+                            </div>
                             @endforeach
-                        </select>
+                        @else
+                            <div class="col-md-12 text-center">
+                                <h2 class="h3">Não foram encontrados resultados. 😪</h2>
+                            </div>
+                        @endif
                     </div>
-                    <div class="col-md-3 no-padding">
-                        <select class="col-md-12" id="neigh" name="bairro" disabled>
-                            <option value="0">Selecione o bairro</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 no-padding">
-                        <select class="col-md-12" id="ordem" name="ordem">
-                            <option value="date_desc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'DESC' ? 'selected' : '' }}>Mais Recente</option>
-                            <option value="date_asc" {{ $filter['order'][0] == 'animals.created_at' && $filter['order'][1] == 'ASC' ? 'selected' : '' }}>Mais Antigo</option>
-                        </select>
-                    </div>
-{{--                    <div class="col-md-2 no-padding">--}}
-{{--                        <input type="date" class="col-md-12" name="data" value="{{ $filter['date'] ?? '' }}">--}}
-{{--                    </div>--}}
-                    <div class="col-md-2 pl-md-3">
-                        <button type="submit" class="button-search col-md-12">Aplicar Filtro</button>
-                    </div>
-                </form>
-            </div>
-            <div class="row pl-md-5 pr-md-5 list-searchs">
-                <div class="col_1_of_2 col-md-12">
-                    @if (count($dataAnimals))
-                        @foreach($dataAnimals as $animal)
-                        <div class="mb-2 images_1_of_2 iten-search">
-                            <a href="{{ route('user.animals.searchFind', ['id' => $animal['id']]) }}" class="d-flex align-items-center">
-                                <div class="listimg">
-                                    <img src="{{ asset($animal['path'] ? "user/img/animals/{$animal['id']}/thumbnail_{$animal['path']}" : 'user/img/animals/sem_foto.png') }}" width="100px" alt="{{ $animal['name'] }}">
-                                </div>
-                                <div class="text list_2_of_1">
-                                    <h3><span>{{ date('d/m/Y H:i', strtotime($animal['created_at'])) }}</span> {{ $animal['name'] }}</h3>
-                                    <p>
-                                        <b>Bairro:</b> {{ $animal['neigh_name'] }}
-                                        <b class="pl-md-4">Espécie:</b> {{ $animal['species'] }}
-                                        <b class="pl-md-4">Cor:</b> {{ $animal['color'] }}
-                                        <b class="pl-md-4">Porte:</b> {{ $animal['size'] }}
-                                    </p>
-                                    <h4 class="pt-1">{{ $animal['place'] }}</h4>
-                                </div>
-                            </a>
-                        </div>
-                        @endforeach
-                    @else
-                        <div class="col-md-12 text-center">
-                            <h2 class="h3">Não foram encontrados resultados. 😪</h2>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>

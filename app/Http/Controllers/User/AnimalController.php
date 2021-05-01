@@ -215,7 +215,7 @@ class AnimalController extends Controller
         $animal['city_name'] = $this->city->getCity($animal['city']);
         $animal['neigh_name'] = $this->neighborhood->getNeigh($animal['neigh']);
 
-        $blockChat = Auth::guard('client')->user() ? ($animal['user_created'] == Auth::guard('client')->user()->id ? true : false) : true;
+        $blockChat = Auth::guard('client')->user() ? ($animal['user_created'] == Auth::guard('client')->user()->id ? null : false) : true;
 
         return view('user.animal.searchFind', compact('animal', 'imagesAnimal', 'blockChat'));
     }
