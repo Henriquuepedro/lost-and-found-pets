@@ -22,20 +22,136 @@
                 centerMode: true,
                 focusOnSelect: true
             });
+            loadMessageChat();
 
+            setInterval(function(){
+                getNewsMessagesConversation();
+            }, 5000)
+
+        });
+
+        const getNewsMessagesConversation = async () => {
+
+            const user = $('#user_id_chat').val();
+            const animal = $('#animal_id_chat').val();
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: window.location.origin + "/queries/ajax/getNewMessageConversation",
+                data: { user, animal },
+                dataType: 'json',
+                success: async response => {
+
+                    let date;
+
+                    if (!response.length) return false;
+
+                    const check = checkShowAlertNewMessage();
+
+                    await $(response).each(function (key, value) {
+                        date =  moment(value.created_at, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY HH:mm");
+
+                        if (!$(`#messages li[message-id="${value.id}"]`).length) {
+                            $('#messages ul').append(`
+                                <li message-id="${value.id}" class="d-flex justify-content-end flex-wrap">
+                                    <div class="message other-message float-right">${value.content}<br/><small>${date}</small></div>
+                                </li>
+                            `);
+                        }
+                    });
+
+                    if (check)
+                        $('#messages').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+
+                }, error: (e) => {
+                    console.log(e);
+                }
+            });
+        }
+
+        const loadMessageChat = () => {
+            const userId = $('#user_id_chat').val();
+            const animalId = $('#animal_id_chat').val();
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: window.location.origin + "/queries/ajax/getMessage",
+                data: { userId, animalId },
+                dataType: 'json',
+                success: async response => {
+
+                    let listMessages = '';
+                    let date;
+                    await $(response).each(function (key, value) {
+                        date =  moment(value.created_at, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY HH:mm");
+                        if (value.from == userId) {
+                            listMessages += `
+                                <li message-id="${value.id}" class="d-flex justify-content-end flex-wrap">
+                                    <div class="message other-message">${value.content}<br/><small>${date}</small></div>
+                                </li>
+                            `;
+                        } else {
+                            listMessages += `
+                                <li message-id="${value.id}" class="d-flex justify-content-start flex-wrap">
+                                    <div class="message my-message">${value.content}<br/><small>${date}</small></div>
+                                </li>
+                            `;
+                        }
+                    });
+
+                    $('#messages ul').empty().append(listMessages);
+                    setTimeout(() => {
+                        $('#messages').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+                    },1000);
+
+                }, error: (e) => {
+                    console.log(e);
+                }
+            });
+        }
+
+        /**
+         * @param showBtn
+         * @return boolean true=está no fim.
+         */
+        const checkShowAlertNewMessage = (showBtn = true) => {
+            const scrollUser = $('#messages').scrollTop() + $('#messages').height();
+            const scrollChat = $('#messages ul').height();
+
+            if (scrollChat <= scrollUser || (scrollChat + 10) <= scrollUser) {
+                $('.alert-new-message').hide();
+                return true;
+            } else if(showBtn) {
+                $('.alert-new-message').css('display', 'flex');
+            }
+
+            return false;
+        }
+
+        $('.alert-new-message button').click(function (){
+            $('#messages').animate({scrollTop: $(window).scrollTop() + $(window).height()});
+            $('.alert-new-message').hide();
         });
 
         $('#sendMessage').click(function (){
             const content = $('#message').val();
-            const userTo = $('#user_id').val();
-            const animalTo = $('#animal_id').val();
+            const userTo = $('#user_id_chat').val();
+            const animalTo = $('#animal_id_chat').val();
 
             if (content.length === 0) {
                 alert('Escreva uma mensagem.')
                 return false;
             }
 
-            $(this).attr('disabled', true);
+            const btn = $(this);
+
+            btn.attr('disabled', true);
 
             $.ajax({
                 headers: {
@@ -47,17 +163,35 @@
                 dataType: 'json',
                 success: async () => {
 
-                    window.location.href = '{{ route('user.account.chat') }}';
+                    const dateSend =  moment().format("DD/MM/YYYY HH:mm");
+
+                    await $('#messages ul').append(`
+                        <li>
+                            <div class="message my-message">${content}<br/><small>${dateSend}</small></div>
+                        </li>
+                    `);
+                    $('#message').val('');
+                    $('#messages').animate({scrollTop: $(window).scrollTop() + $(window).height()}, 'slow');
 
                 }, error: (e) => {
                     console.log(e);
+                    btn.attr('disabled', false);
                 }, complete: (e) => {
                     if (e.status === 401)
                         window.location.href = '{{ route('user.login') }}';
+
+                    btn.attr('disabled', false);
                 }
             });
         });
 
+        $('#closeChat').click(function (){
+            $('.chat-popup').slideUp('slow');
+        });
+
+        $('#openChat').click(function (){
+            $('.chat-popup').slideDown('slow');
+        });
 
     </script>
 @endsection
@@ -164,6 +298,102 @@
             list-style: revert;
             margin: revert;
             padding: revert;
+        }
+        /* CHAT */
+        /* Button used to open the chat form - fixed at the bottom of the page */
+        .chat-popup {
+            background-color: #888;
+            color: white;
+            padding: 16px 20px;
+            opacity: 1;
+            position: fixed;
+            bottom: 0;
+            right: 67px;
+            width: 400px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            border: 1px solid #C0392B;
+            z-index: 1;
+            border-bottom: 0;
+            display: none;
+        }
+        .chat-popup .fa-times {
+            cursor: pointer;
+            font-size: 25px;
+        }
+        #sendMessage {
+            margin-top: 10px;
+            background-color: #d74a3c;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #fff;
+            color: #fff;
+        }
+        #sendMessage:hover {
+            background-color: #993127;
+        }
+        #messages {
+            background-color: #fff;
+            height: 250px;
+            width: 100%;
+            border-radius: 5px;
+            padding: 5px 2px;
+            overflow-y: scroll;
+        }
+        .alert-new-message {
+            position: absolute;
+            top: 85px;
+            display: none;
+            justify-content: center;
+            width: 100%;
+        }
+        .alert-new-message button {
+            border: 1px solid #972519;
+            background-color: #c0392b;
+            border-radius: 15px;
+            padding: 3px 30px;
+            color: #fff;
+            box-shadow: 12px 12px 28px -7px #000000;
+        }
+        .alert-new-message button:hover {
+            border: 1px solid #79190f;
+            background-color: #972519;
+        }
+        .alert-new-message button:active {
+            border: 1px solid #641109;
+            background-color: #79190f;
+        }
+        #messages .my-message {
+            background: #86bb71;
+        }
+        #messages .other-message {
+            background: #94c2ed;
+        }
+        #messages .message {
+            color: white;
+            padding: 5px 10px;
+            line-height: 15px;
+            font-size: 15px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            width: 80%;
+            position: relative;
+        }
+        #messages .message small {
+            color: #000;
+        }
+
+        #messages::-webkit-scrollbar {
+            width: 10px;
+        }
+        #messages::-webkit-scrollbar-track {
+            background: #444753;
+        }
+        #messages::-webkit-scrollbar-thumb {
+            background: #999;
+        }
+        #messages::-webkit-scrollbar-thumb:hover {
+            background: #666;
         }
     </style>
 
@@ -293,24 +523,25 @@
                     </div>
                 </div>
             </div>
-            @if (!$blockChat)
+            @if ($blockChat === false)
             <div class="row">
                 <div class="col-md-12">
                     <hr>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 form-group">
-                    <h5 class="h5">Entre em contato pelo chat.</h5>
-                    <textarea id="message" class="form-control"></textarea>
-                </div>
                 <div class="col-md-12 d-flex justify-content-between flex-wrap">
                     <a href="{{ route('user.animals.list') }}" class="btn btn-primary">Voltar</a>
-                    <button id="sendMessage" class="btn btn-primary">Enviar Mensagem</button>
+                    <button id="openChat" class="btn btn-primary">Enviar Mensagem</button>
                 </div>
-                <input type="hidden" id="user_id" value="{{ $animal['user_created'] }}">
-                <input type="hidden" id="animal_id" value="{{ $animal['id'] }}">
             </div>
+            @elseif ($blockChat === null)
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-between align-items-center flex-wrap">
+                        <a href="{{ route('user.account.animal', ['id' => $animal['id']]) }}">Atualizar Cadastro</a>
+                        <a href="{{ route('user.animals.list') }}" class="btn btn-primary">Voltar</a>
+                    </div>
+                </div>
             @else
                 <div class="row">
                     <div class="col-md-12 text-center mt-2 mb-3">
@@ -322,6 +553,29 @@
                 </div>
             @endif
         </div>
+    </div>
+    <div class="chat-popup">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="h4">Conversa</h4>
+            <i class="fa fa-times" id="closeChat"></i>
+        </div>
+
+        <div id="messages">
+            <ul></ul>
+            <div class="alert-new-message">
+                <button><i class="fas fa-angle-double-down"></i> Você tem novas mensagens</button>
+            </div>
+        </div>
+
+        <label for="message" class="mt-3"><b>Mensagem</b></label>
+        <textarea id="message" class="form-control" rows="2"></textarea>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" id="sendMessage" class="">Enviar Mensagem</button>
+        </div>
+
+        <input type="hidden" id="user_id_chat" value="{{ $animal['user_created'] }}">
+        <input type="hidden" id="animal_id_chat" value="{{ $animal['id'] }}">
     </div>
 
 @endsection
