@@ -45,18 +45,34 @@ class Animal extends Model
      */
     protected $casts = [];
 
-    public function getAnimals($userId)
+    public function getAnimals($userId, $regPerPage, $page)
     {
         return $this->select('name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation')
-                    ->leftJoin('animal_images',function ($join) {
-                        $join->on(function ($queryone){
-                            $queryone->on('animal_images.animal_id', 'animals.id');
-                            $queryone->where('animal_images.primary', true);
-                        });
-                    })
-                    ->where('animals.user_created', $userId)
-                    ->orderBy('animals.id', 'DESC')
-                    ->get();
+            ->leftJoin('animal_images',function ($join) {
+                $join->on(function ($queryone){
+                    $queryone->on('animal_images.animal_id', 'animals.id');
+                    $queryone->where('animal_images.primary', true);
+                });
+            })
+            ->where('animals.user_created', $userId)
+            ->orderBy('animals.id', 'DESC')
+            ->offset(($page-1)*$regPerPage)
+            ->limit($regPerPage)
+            ->get();
+    }
+
+    public function getCountAnimals($userId)
+    {
+        return $this->select('name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation')
+            ->leftJoin('animal_images',function ($join) {
+                $join->on(function ($queryone){
+                    $queryone->on('animal_images.animal_id', 'animals.id');
+                    $queryone->where('animal_images.primary', true);
+                });
+            })
+            ->where('animals.user_created', $userId)
+            ->orderBy('animals.id', 'DESC')
+            ->count();
     }
 
     public function insert($data)
@@ -64,7 +80,7 @@ class Animal extends Model
         return $this->create($data);
     }
 
-    public function getAllAnimals($city, $neigh, $date, $order)
+    public function getAllAnimals($city, $neigh, $date, $order, $regPerPage, $page)
     {
         $query = $this->select('animals.name', 'species', 'color', 'size', 'disappearance_date', 'animals.created_at', 'path', 'animals.id', 'observation', 'place', 'neighborhoods.name as neigh_name')
             ->leftJoin('animal_images',function ($join) {
@@ -79,7 +95,20 @@ class Animal extends Model
         if ($neigh) $query->where('animals.neigh', $neigh);
         if ($date) $query->where('animals.updated_at', '>', $date);
 
-        return $query->orderBy($order[0], $order[1])->get();
+        return $query->orderBy($order[0], $order[1])
+            ->offset(($page-1)*$regPerPage)
+            ->limit($regPerPage)
+            ->get();
+    }
+
+    public function getCountAllAnimals($city, $neigh, $date)
+    {
+        $query = $this->select('animals.id');
+        if ($city) $query->where('animals.city', $city);
+        if ($neigh) $query->where('animals.neigh', $neigh);
+        if ($date) $query->where('animals.updated_at', '>', $date);
+
+        return $query->count();
     }
 
     public function getAnimal($id, $user_id = null)

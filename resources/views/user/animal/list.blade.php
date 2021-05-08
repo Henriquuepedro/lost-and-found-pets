@@ -110,7 +110,7 @@
                                     <div class="acc-order-container">
                                         <div class="row">
                                             <div class="col-md-12 d-flex justify-content-between flex-wrap align-items-center">
-                                                <h1 class="mt-0">Registros Realizados</h1>
+                                                <h1 class="mt-0">Registros Realizados <br><small>Você tem {{ $totalReg }} registros</small></h1>
                                                 <a href="{{ route('user.account.animals.new') }}" class="btn btn-primary mr-0">Novo Registro</a>
                                             </div>
                                         </div>
@@ -182,6 +182,18 @@
 
                             </div>
                         </div>
+
+                        @if(count($dataAnimals) > 0)
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12 d-flex justify-content-between flex-wrap align-items-center no-padding">
+                            <a href="{{ $page == 1 ? '#' : route('user.account.animals', ['page' => $page - 1]) }}" class="btn {{ $page == 1 ? 'disabled' : '' }}">Página Anterior</a>
+                            <span class="h5">Página: {{ $page }}</span>
+                            <a href="{{ $page == $maxPage ? '#' : route('user.account.animals', ['page' => $page + 1]) }}" class="btn {{ $page == $maxPage ? 'disabled' : '' }}">Próxima Página</a>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

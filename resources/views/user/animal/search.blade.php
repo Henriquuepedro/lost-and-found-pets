@@ -60,14 +60,14 @@
             border-left: 0;
         }
         .filters-search  div.col-md-3:nth-child(2) .select2-container .select2-selection--single {
-            border-radius: 0;
+            border-radius: 5px;
         }
         .filters-search .select2-container {
             border: 1px solid #c0392b;
             background: #fff;
             color: #c0392b;
             height: 40px;
-            border-radius: 0;
+            border-radius: 5px;
             width: 100% !important;
         }
         .filters-search input{
@@ -114,17 +114,6 @@
         }
 
         @media (max-width:768px){
-
-            .filters-search input,
-            .filters-search select {
-                border-radius: 0 !important;;
-            }
-            .filters-search .select2-container .select2-selection--single {
-                border-radius: 0 !important;
-            }
-            .filters-search div.col-md-3:nth-child(1) .select2-container{
-                border-radius: 0 !important;
-            }
             .filters-search .button-search {
                 margin-top:5px
             }
@@ -138,9 +127,9 @@
                 width: 100%;
             }
             .filters-search {
-                background-color: #2c2f3c;
-                border-top: 1px solid #fff;
-                border-bottom: 1px solid #fff;
+                /*background-color: #2c2f3c;*/
+                /*border-top: 1px solid #fff;*/
+                /*border-bottom: 1px solid #fff;*/
             }
         }
     </style>
@@ -150,7 +139,7 @@
 
     <div class="main">
         <div class="wrap wrap-search">
-            <div class="row">
+            <div class="row" style="width: 100%">
                 <div class="col-md-3 filters-search">
                     <div class="col-md-12 text-center pt-4">
                         <h2 class="mb-3">filtre a região</h2>
@@ -205,6 +194,19 @@
                                 </a>
                             </div>
                             @endforeach
+                            <div class="col-md-12 mb-5 no-padding">
+                                @if (count($dataAnimals))
+                                    <div class="col-md-12">
+                                        <hr>
+                                    </div>
+
+                                    <div class="col-md-12 d-flex justify-content-between flex-wrap align-items-center no-padding">
+                                        <a href="{{ $page == 1 ? '#' : route('user.animals.list', ['page' => $page - 1]) }}" class="btn {{ $page == 1 ? 'disabled' : '' }}">Página Anterior</a>
+                                        <span class="h5 font-weight-bold">Página: {{ $page }}</span>
+                                        <a href="{{ $page == $maxPage ? '#' : route('user.animals.list', ['page' => $page + 1]) }}" class="btn {{ $page == $maxPage ? 'disabled' : '' }}">Próxima Página</a>
+                                    </div>
+                                @endif
+                            </div>
                         @else
                             <div class="col-md-12 text-center">
                                 <h2 class="h3">Não foram encontrados resultados. 😪</h2>
@@ -212,6 +214,8 @@
                         @endif
                     </div>
                 </div>
+            </div>
+            <div class="row">
             </div>
         </div>
     </div>
