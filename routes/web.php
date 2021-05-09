@@ -30,8 +30,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeUser::class, 'index'])->name('user.home');
 
 
-Route::get('/politica-de-privacidade', function () { return view('user.policy.policy'); });
-Route::get('/termos-de-servico', function () { return view('user.policy.terms'); });
+Route::get('/politica-de-privacidade', function () { return view('user.policy.policy'); })->name('user.policy.policy');
+Route::get('/termos-de-servico', function () { return view('user.policy.terms'); })->name('user.policy.terms');
 
 // Login externo (Com Apps)
 Route::get('/entrar/facebook', [LoginController::class, 'loginFacebook'])->name('user.login.facebook');
@@ -56,8 +56,8 @@ Route::get('/contato', [AboutController::class,'contact'])->name('user.contact')
 Route::post('/contact', [ContactController::class,'contact'])->name('user.mail.contact');
 //Route::get('/depoimentos', [AboutController::class,'testimonies'])->name('user.testimonies');
 
-Route::get('/localizar', [AnimalUser::class,'list'])->name('user.animals.list');
-Route::get('/localizar/{id}', [AnimalUser::class,'searchFind'])->name('user.animals.searchFind');
+Route::get('/localizar/{page?}', [AnimalUser::class,'list'])->name('user.animals.list');
+Route::get('/localizar/registro/{id}', [AnimalUser::class,'searchFind'])->name('user.animals.searchFind');
 
 
 Route::post('/queries/ajax/getNeighsCity', [AnimalUser::class, 'getNeighsCity'])->name('queries.ajax.getNeighsCity');
@@ -71,7 +71,7 @@ Route::group(['middleware' => 'auth:client'], function (){
 
     Route::post('/minhaconta/depoimento', [TestimonyUser::class, 'newForUserTestimony'])->name('user.account.testimony');
 
-    Route::get('/minhaconta/animais', [AnimalUser::class, 'animals'])->name('user.account.animals');
+    Route::get('/minhaconta/animais/{page?}', [AnimalUser::class, 'animals'])->name('user.account.animals');
     Route::get('/minhaconta/animais/novo', [AnimalUser::class, 'create'])->name('user.account.animals.new');
     Route::post('/minhaconta/animais/insert', [AnimalUser::class, 'insert'])->name('user.account.animals.insert');
     Route::post('/minhaconta/animais/update', [AnimalUser::class, 'update'])->name('user.account.animals.update');

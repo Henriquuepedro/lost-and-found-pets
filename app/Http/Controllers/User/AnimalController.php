@@ -33,12 +33,22 @@ class AnimalController extends Controller
         $this->conversation = $conversation;
     }
 
-    public function animals()
+    public function animals(int $page = null)
     {
+        $regPerPage = 15;
+        if (!$page) $page = 1;
         $userId = auth()->guard('client')->user()->id ?? null;
-        $dataAnimals = $this->animal->getAnimals($userId);
 
-        return view('user.animal.list', compact('dataAnimals'));
+        // total de registro nesse usuário
+        $totalReg = $this->animal->getCountAnimals($userId);
+        $maxPage = (int)ceil($totalReg/$regPerPage);
+
+        // passou uma página maior que quantidade de registros por página
+        if ($maxPage < $page) return redirect()->route('user.account.animals', ['page' => $maxPage]);
+
+        $dataAnimals = $this->animal->getAnimals($userId, $regPerPage, $page);
+
+        return view('user.animal.list', compact('dataAnimals', 'totalReg', 'regPerPage', 'page', 'maxPage'));
     }
 
     public function animal($id)
@@ -171,8 +181,11 @@ class AnimalController extends Controller
 
     }
 
-    public function list()
+    public function list(int $page = null)
     {
+        $regPerPage = 15;
+        if (!$page) $page = 1;
+
         $city   = 0;
         $neigh  = 0;
         $date   = 0;
@@ -201,10 +214,18 @@ class AnimalController extends Controller
             'order' => $order
         ];
 
-        $dataAnimals = $this->animal->getAllAnimals($city, $neigh, $date, $order);
+
+        // total de registro nesse usuário
+        $totalReg = $this->animal->getCountAllAnimals($city, $neigh, $date);
+        $maxPage = (int)ceil($totalReg/$regPerPage);
+
+        // passou uma página maior que quantidade de registros por página
+        if ($maxPage < $page) return redirect()->route('user.animals.list', ['page' => $maxPage]);
+
+        $dataAnimals = $this->animal->getAllAnimals($city, $neigh, $date, $order, $regPerPage, $page);
         $cities = $this->city->getAllCitiesActive();
 
-        return view('user.animal.search', compact('dataAnimals', 'cities', 'filter'));
+        return view('user.animal.search', compact('dataAnimals', 'cities', 'filter', 'totalReg', 'regPerPage', 'page', 'maxPage'));
     }
 
     public function searchFind($id)

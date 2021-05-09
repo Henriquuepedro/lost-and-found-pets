@@ -2005,7 +2005,7 @@ ul.last li span {
 	margin-right: 3%;
 }
 .about-desc {
-	width: 68%;
+	width: 90%;
 	float: left;
 	margin-right: 0;
 }
@@ -2342,6 +2342,11 @@ ul.last li span {
 
 a:hover{
     text-decoration: none !important;
+}
+a.btn.disabled {
+    opacity: .65;
+    pointer-events: none;
+    cursor: no-drop;
 }
 
 /***** Media Quries *****/

@@ -395,6 +395,13 @@
         #messages::-webkit-scrollbar-thumb:hover {
             background: #666;
         }
+
+        @media (max-width: 768px) {
+            .chat-popup {
+                right: 0;
+                width: 100%;
+            }
+        }
     </style>
 
 @endsection
