@@ -71,12 +71,12 @@ Route::group(['middleware' => 'auth:client'], function (){
 
     Route::post('/minhaconta/depoimento', [TestimonyUser::class, 'newForUserTestimony'])->name('user.account.testimony');
 
-    Route::get('/minhaconta/animais/{page?}', [AnimalUser::class, 'animals'])->name('user.account.animals');
     Route::get('/minhaconta/animais/novo', [AnimalUser::class, 'create'])->name('user.account.animals.new');
     Route::post('/minhaconta/animais/insert', [AnimalUser::class, 'insert'])->name('user.account.animals.insert');
     Route::post('/minhaconta/animais/update', [AnimalUser::class, 'update'])->name('user.account.animals.update');
     Route::post('/minhaconta/animais/excluir', [AnimalUser::class, 'delete'])->name('user.account.animals.delete');
-    Route::get('/minhaconta/animais/{id}',  [AnimalUser::class, 'animal'])->name('user.account.animal');
+    Route::get('/minhaconta/animais/{page?}', [AnimalUser::class, 'animals'])->name('user.account.animals');
+    Route::get('/minhaconta/animais/registro/{id}',  [AnimalUser::class, 'animal'])->name('user.account.animal');
 
     Route::get('/minhaconta/chat', [ChatController::class, 'animals'])->name('user.account.chat');
 
